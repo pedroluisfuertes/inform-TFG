@@ -1,0 +1,63 @@
+\chapter{Motivación}
+En la actualidad los ataques por correo electrónico siguen siendo un hecho y prácticamente todo el mundo ha recibido algún correo de este tipo alguna vez, lo que demuestra que, las herramientas actuales no son capaces de solucionar de manera efectiva este problema. 
+
+Esto se suma a que cada vez los ataques son más y más sofisticados, y, por tanto, complicados de detectar, ya no solo por estas herramientas, sino, por las propias personas, sean o no profesionales del sector. Y es que cuando un usuario recibe un mensaje de este tipo no tiene ninguna herramienta extra que le ayude a comprobar si es o no malicioso. 
+
+Esto es así hasta tal punto, que la solución para identificar estos correos de grandes empresas antivirus dedicadas a la ciberseguridad es que los usuarios sigan su intuición \cite{What_is_phishing}, otras ofrecen pequeños cursos para identificarlos \cite{Google_juego}.
+
+Todo esto refleja como los usuarios están en una clara situación de vulnerabilidad, especialmente los usuarios menos técnicos que no conocen cómo funciona realmente la tecnología y que están usando ¿Y es que acaso deberían?
+
+Bajo mi punto de vista, el enfoque de las grandes compañías sobre cómo atacar los problemas de seguridad que tienen el correo electrónico, está dirigido a personas con unos conocimientos que la mayoría de las personas no tienen y por ta nto sólo es útil para una minoría de usuarios del servicio. 
+
+Pero además, es que dichas compañías tampoco están exentas de ataques de esta naturaleza, esto se pone de manifiesto en algunos ataques llevados a cabo con éxito a empresas tecnológicas de máximo nivel, como pueden ser Google o Facebook, a las que un atacante les consiguió robar 121 millones de euros \cite{estafa_google_facebook}
+
+Todo esto lleva a pensar que actualmente sigue habiendo un gran agujero de seguridad en el correo electrónico y que las herramientas existentes no son suficientes ni siquiera para los expertos del sector. 
+
+
+\section{Aplicaciones relacionadas}
+A continuación, se van a analizar un conjunto de herramientas que, si bien no ofrecen soluciones completas a este problema, pueden ser buenos servicios en los que apoyarse para tratar de dar una solución más amplia y completa que las actuales.
+\subsection{Herramientas específicas del correo electrónico}
+Las herramientas descritas en esta sección únicamente son válidas en correos electrónicos, por lo que, si en el futuro también se desean analizar otro tipo de mensajes, o no se tienen todas las cabeceras asociadas al mensaje, no serán válidas
+
+\subsubsection{Filtros de correo no deseado}
+Tal vez sea la mejor solución que se tiene actualmente para mitigar este tipo de problemas. Son filtros que analizan cada uno de los mensajes que se reciben y en base a distintos criterios informan al usuario si el correo es o no legítimo.
+
+Aunque, este tipo de herramientas tienen varios problemas asociados:
+
+\begin{itemize}
+    \item Su efectividad: Conseguir una herramienta con una efectividad del 100\% es prácticamente imposible y esto es algo que se debe asumir, sin embargo, hay ciertos filtros cuya efectividad bastante reducida.
+    \item La imposibilidad de poner un filtro de este tipo: hay muchos servicios de correo electrónico que no permiten al usuario poner un filtro personalizado de correo no deseado. Ejemplos de estos servicios son Gmail u Outlook,  1500 \cite{usuarios_gmail} y 400 \cite{usuarios_hotmail} millones de usuarios respectivamente (¡Son muchos!)
+    \item Una vez que el mensaje pasa el filtro, esta herramienta deja de ser efectiva, lo cual puede ser muy sencillo para un atacante, simplemente va probando con distintos correos hasta que consigue uno que lo pase. 
+\end{itemize}
+
+Un servicio de este tipo puede ser muy útil para un primer análisis si el mensaje es compatible. Normalmente tienen una larga trayectoria, son rápidas y tienen una efectividad comprobada.
+
+\subsection{Analizador de cabeceras}
+Un analizador de cabeceras de correo electrónico da información relevante y normalmente invisible al usuario sobre dicho correo. Estas cabeceras pueden aportar información muy útil como por ejemplo la ruta seguida por el mensaje, la ip del servidor de correo desde donde se envió o si ha pasado o no los filtros antispam del proveedor de correo. 
+
+Actualmente hay varias páginas que ofrecen este servicio, como por ejemplo Google \cite{header_google_analyzer}, Mircrosoft \cite{header_microsoft_analyzer} o Mxtoolbox \cite{header_mxtoolbox_analyzer}.
+
+Ofrecer este tipo de análisis es muy interesante, ya que permite de manera sencilla hacer un análisis más profundo por parte de un profesional del sector.
+
+\section{Herramientas generales}
+Las herramientas que se describen a continuación, si bien no están destinadas al correo electrónico como tal, se pueden usar de manera efectiva para analizar los distintos mensajes que se reciban, sean o no correos electrónicos. 
+
+\subsubsection{Virus Total} 
+Virus Total \cite{virus_total} es una web propiedad de Google que permite analizar archivos, y direcciones web en busca de programas malignos y aunque no está directamente relacionada con el correo electrónico puede servir de ayuda para analizar posibles archivos adjuntos, así como posibles direcciones sospechosas.
+
+Tener una herramienta que enlace directamente con el servicio puede ser de gran ayuda tanto para profesionales del sector como para usuarios menos especializados, que lo único que tendrán que hacer es clicar en un botón para analizar una dirección de su correo electrónico. 
+
+Virus total ofrece una api rest que permite analizar tanto archivos como urls, dominios e ips.\cite{virus_total_api}
+
+\subsubsection{Metadefender}
+Metadefender \cite{metadefender} es un analizador de archivos, url’s, dominios e ips similar a Virus Total de la empresa de ciberseguridad Opswat.
+
+Puede ser una buena alternativa a Virus Total y al igual que este tiene una api pública \cite{metadefender_api} en la que realizar consultas. 
+
+\subsubsection{Have I been pwned}
+Have I been pwned \cite{Have_I_been_pwned} es una web que permite saber si una dirección de correo electrónico ha aparecido en alguna brecha de seguridad, y en caso de que haya aparecido te dice en qué brecha ha sido.
+
+Saber si el mensaje proviene de una dirección comprometida puede ser de relevancia, siendo más probable que un mensaje malicioso provenga de una dirección comprometida que de una dirección que no lo sea. 
+
+Have I been pwned tiene una api \cite{Have_I_been_pwned_api} donde realizar consultas sobre direcciones de correo electrónico, además su base de datos se va actualizando con las últimas brechas de seguridad que van surgiendo y contando ya con más de 9.500 millones de cuentas de correo.
+

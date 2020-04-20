@@ -1,6 +1,6 @@
-\documentclass[a4paper,openright,11pt]{book}
+\documentclass[a4paper,openright,11pt,spanish]{book}
 %\documentclass[a4paper,twoside,11pt,titlepage]{book}
-\usepackage[utf8]{inputenc}
+%\usepackage[utf8]{inputenc}
 \usepackage[spanish]{babel}
 \usepackage{listings}
 \usepackage{fancyhdr}
@@ -8,14 +8,31 @@
 \usepackage{graphicx}
 %\usepackage{afterpage}
 %\usepackage{longtable}
-\usepackage[pdfborder={000}]{hyperref} %referencia
+%\usepackage[pdfborder={000}]{hyperref} %referencia
 \usepackage{etoolbox,xspace}
-%\usepackage{dcolumn}
-\usepackage{url}
-\usepackage[square,numbers]{natbib}
-\bibliographystyle{abbrvnat}
+%\usepackage{dcolumn} 
+%\usepackage{url}
+\usepackage{hyperref}
+%\usepackage[square,numbers]{natbib}
+%\usepackage[sort&compress,square,comma,authoryear]{natbib}
+%\usepackage[colorlinks=true,urlcolor=blue,citecolor=red,linkcolor=red,bookmarks=true]{hyperref}
+%{\jobname.bib}
+%eo,
+%a-ti Group",
+%istics Report, 2017-2021",
+%adicati.com/wp/wp-content/uploads/2017/01/Email-Statistics-Report-2017-2021-Executive-Summary.pdf"
+%
+%
+%
+%iber]{biblatex}
+%ame.bib}
+%iografia/bibliografia.bib}
+%
+\usepackage{cite}
+
+%\setcitestyle{numbers}
 %\usepackage[stable]{footmisc}
-%\usepackage{pdfpages}
+%\usepackage{pdfpages} 
 % \usepackage[style=list, number=none]{glossary} %
 %\usepackage{titlesec}
 %\usepackage{pailatino}
@@ -34,7 +51,7 @@
 % ********************************************************************
 % Re-usable information
 % ********************************************************************
-\newcommand{\myTitle}{Título del proyecto\xspace}
+\newcommand{\myTitle}{Analizador de mensajes de correo\xspace}
 \newcommand{\mySubTitle}{Subtítulo del proyecto\xspace}
 \newcommand{\myDegree}{Grado en ingeniería informática\xspace}
 \newcommand{\myName}{Pedro Luis Fuertes Moreno\xspace}
@@ -164,8 +181,8 @@
   \penalty -\@Mi
 }
 \makeatother
-
-\begin{document}
+%\bibliography{bibliografia/bibliografia}
+\begin{document} 
 
 \input{portada/portada}
 \input{prefacios/prefacio}
@@ -175,36 +192,14 @@
 \cleardoublepage
 \addcontentsline{toc}{chapter}{Índice general}
 \tableofcontents
-%\listoffigures
+%\listoffigures 
 %\listoftables
 %
 %\mainmatter
 %\setlength{\parskip}{5pt}
 
-%Puntos: 
-%1. Resumen y palabras clave
-%2. Resumen extendido (Abstract)
-%3. Motivación e introducción (Estado del arte)
-%4. Objetivos del trabajo
-%5 Adecuación a la ley de protección de datos
-%5. Elección del lenguaje de programación para la extracción de datos
-%  5.1. PERL
-%  5.2 C++
-%  5.3 JAVA
-%4. Elección de la base de datos en la que almacenar los datos
-%  4.1 NO-SQL
-%  4.2 SQL
-%  4.2.1 MariaBD
-%  4.2.2 Postgre
-%5. Visualización de los datos
-%  5.1 D3 js
-%  5.2 vis js
-%6. Conclusiones y vías futuras
-%7. Bibliografía
-
-
 \input{capitulos/Introduccion.tex}
-\chapter{Motivación}
+\input{capitulos/Motivacion.tex}
 \chapter{Objetivos y especificaciones}
 \chapter{Diseño}
 \setcounter{section}{0}
@@ -249,8 +244,11 @@
 %
 %%\nocite{*}
 \bibliography{bibliografia/bibliografia}\addcontentsline{toc}{chapter}{Bibliografía}
+%\bibliography{bibliografia}\addcontentsline{toc}{chapter}{Bibliografía}
+\bibliographystyle{unsrt}
+%\printbibliography
+%\bibliographystyle{plainnat}
 %\bibliographystyle{miunsrturl}
-%
 %\appendix
 %\input{apendices/manual_usuario/manual_usuario}
 %%\input{apendices/paper/paper}

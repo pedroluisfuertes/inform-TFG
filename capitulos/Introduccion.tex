@@ -1,0 +1,41 @@
+\chapter{Introducción}
+Aunque en la actualidad poseemos una gran cantidad de aplicaciones con las que comunicarnos con otras personas, el correo electrónico sigue siendo una de las herramientas de comunicación más usadas, especialmente en el mundo empresarial. 
+
+Esto es debido a que fue uno de los primeros servicios en permitirnos enviar y recibir tanto texto como otros tipos de archivos de manera rápida y sencilla. 
+
+Según un estudio de hace tres años de The Radicati Group el correo electrónico tenía 3.7 mil millones de usuarios, que enviaban 269 mil millones de correos cada día. \cite{cifrasCorreo}
+
+Viendo las cifras anteriores se puede entender la importancia de tener un servicio de este tipo lo más seguro posible, ya que un ataque bien diseñado puede afectar a millones de personas.
+
+Sin embargoBreve historia del correo electrónico, debido a cómo y cuándo crea, la seguridad nunca ha sido uno de sus puntos fuertes y eso ha llegado hasta nuestros días.
+ 
+\section{Breve historia del correo electrónico}
+El correo electrónico se remonta a 1962 en el MIT, cuando compraron a IBM un ordenador que permitía que distintos usuarios iniciaran sesión y guardaran archivos en él. Estos lo aprovecharon para intercambiar mensajes, lo que provocó que para 1965 se desarrollara un servicio que facilitase esa comunicación entre los distintos usuarios y lo llamaron MAIL.
+
+Hay que tener en cuenta que, en ese servicio, los mensajes no salían de dicho ordenador. Habría que esperar hasta 1971 para ver lo que sería el primer “correo electrónico” enviado a través de una red, en concreto de ARPANET y fue gracias a Ray Tomlinson, que adaptó un programa que permitía enviar mensajes a distintos terminales de distintos usuarios de un mismo ordenador, para poder enviar mensajes entre distintos terminales, aunque no estuviesen en el mismo ordenador. Precisamente el “@” del correo electrónico viene de la necesidad de Tomlinson de tener que separar al usuario del equipo, ya que anteriormente esto no era necesario.
+
+No es hasta 1977 cuando se crea el primer rfc del correo electrónico, concretamente el rfc733 \cite{rfc733}, aunque, este protocolo no es usado en la actualidad. El primer rfc del primer protocolo que aún se usa es el rfc821 \cite{rfc821}  de SMTP de 1982 y el rfc918 \cite{rfc918}  de POP de 1984.
+
+La situación por aquél entonces de lo que ahora conocemos como Internet, era muy distinta. Internet estaba reservado a universidades, centros de investigación e instituciones gubernamentales. Esto hizo que cuando se desarrollasen estos protocolos, no se pensara en la seguridad de ellos.
+
+Y este es uno de los grandes problemas que tiene el correo en la actualidad, ya que, aunque tanto SMTP como POP (E IMAP \cite{rfc1064} aunque no se ha mencionado antes) han ido recibiendo actualizaciones, están basados en unos protocolos diseñados y pensado para un entorno radicalmente diferente en el que se siguen utilizando.
+
+\section{Origen del proyecto}
+Este proyecto surge debido a la gran cantidad de demandas que he recibido en los últimos años por parte de familiares y amigos para que, les ayudase a verificar si un correo sospechoso que les había llegado a su bandeja de entrada era o no malicioso. 
+
+Y esta tarea, que, para mí era trivial en la mayoría de los casos, no lo era para ellos. Aunque algunos estaban tan bien preparados que incluso a mí me costaba diferenciarlos. 
+
+Todo esto me llevó a pensar dos cosas. La primera, que una vez que un correo llega a la bandeja de entrada del usuario, sólo le queda su intuición para confiar o no en el mensaje, intuición que puede fallar incluso si se tienen conocimientos técnicos.
+
+Por otro, que en caso de querer investigar dicho mensaje y obtener más información, no existe ninguna herramienta específica para ello, por lo que se tiene que hacer todo a mano y siendo imposible obtener algún tipo de relación con otro mensaje parecido, lo cual dificulta mucho el proceso. 
+
+\section{El proyecto}
+El objetivo de este proyecto es tratar de paliar esta carencia de herramientas tanto para la identificación de correos maliciosos una vez que han pasado los filtros de spam, como para la investigación de un mensaje en los casos más complicados. 
+
+Por este motivo se va a crear por un lado, un servicio que permita analizar mensajes online, para que cuando se reciba un mensaje sospechoso, el usuario tenga una segunda validación con más información y por otro lado, se va a permitir al usuario poder “navegar” entre los datos encontrados en el correo para poder obtener más información, lo que puede facilitar en gran medida un análisis más profundo del correo por parte de una persona más técnica en caso de ser necesario.
+
+Para llevar esto acabo se debe crear una gran base de datos con todos los correos analizados, así como los distintos datos que se han extraído de los mismos y sus relaciones. 
+
+También se deben identificar patrones maliciosos conocidos, para poder alertar a los usuarios menos especializados sobre los patrones encontrados sin necesidad de que ellos sepan en qué consisten.
+
+Finalmente, y en la medida de lo posible, se debe intentar pensar en cómo obtener ingresos del proyecto, aunque esto no puede en ningún caso a un usuario particular el poder analizar los mensajes que considere oportunos, siempre y cuando siga una política responsable. 
