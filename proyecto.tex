@@ -11,8 +11,13 @@
 %\usepackage[pdfborder={000}]{hyperref} %referencia
 \usepackage{etoolbox,xspace}
 %\usepackage{dcolumn} 
-%\usepackage{url}
+
+% Url's !
+\usepackage[hyphens]{url}
 \usepackage{hyperref}
+%\usepackage[breaklinks=true]{hyperref}
+
+
 %\usepackage[square,numbers]{natbib}
 %\usepackage[sort&compress,square,comma,authoryear]{natbib}
 %\usepackage[colorlinks=true,urlcolor=blue,citecolor=red,linkcolor=red,bookmarks=true]{hyperref}
@@ -200,8 +205,8 @@
 
 \input{capitulos/Introduccion.tex}
 \input{capitulos/Motivacion.tex}
-\chapter{Objetivos y especificaciones}
-\chapter{Diseño}
+\input{capitulos/Objetivos_y_requisitos.tex}
+\chapter{Análisis y diseño}
 \setcounter{section}{0}
 \section{Elección del lenguaje de programación para la extracción de datos}
 \subsection{Java}
@@ -220,6 +225,10 @@
 \section{Visualización de los datos}
 \section{Adecuación a la ley de protección de datos}
 \chapter{Implementación}
+\section{Expresiones Regulares}
+\section{MySQL}
+\section{PHP}
+\chapter{Pruebas}
 \chapter{Conclusiones y vías futuras}
 %\chapter{Bibliografía}
 
