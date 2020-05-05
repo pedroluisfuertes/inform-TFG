@@ -1,0 +1,111 @@
+\chapter{Análisis y diseño}
+\section{Análisis previo}
+Durante esta sección se analizarán cuestiones importantes que afectarán a múltiples secciones posteriores y que es necesario plantearse antes de comenzar, ya que pueden afectar de manera muy significativa a la elección y posterior diseño de futuros apartados.
+
+De manera general, se deben tener en cuenta los siguientes factores:
+\begin{itemize}
+    \item El tipo de datos que se van a guardar.
+    \item El tipo y la cantidad relaciones entre los datos.
+    \item La forma de identificar los datos. 
+    \item La forma de mostrar los datos. 
+    \item Cómo se va a buscar información y qué búsquedas se van a realizar.
+    \item La cantidad de información que se va a almacenar. 
+\end{itemize}
+
+\subsection{Tipos de datos}
+Dentro de los tipos de datos se tienen que distinguir dos tipos, por un lado, están los mensajes que el usuario envía y por otro los datos que se extraen de ellos. 
+\subsubsection{Tipos de datos a analizar}
+Dentro de los mensajes, este proyecto se centrará en mensajes de correo electrónico, por lo que hay fundamentalmente de tres tipos de datos, en texto plano, en HTML \cite{html_wiki} y en formato EML.
+
+A la hora de elegir un lenguaje, contar con alguna librería que sea capaz de analizar dichos tipos de archivos es algo crítico, puesto que hacer un analizador de dichos tipos sería muy costoso y llevaría demasiado tiempo. Mientras la mayoría de los lenguajes modernos tienen librarías para leer archivos en HTML, no ocurre los mismo para el formato EML. 
+
+Sin embargo, el diseño no debe limitar la implementación de otros tipos de archivos tales como CSV, XML o JSON. 
+
+\subsubsection{Tipos de datos que se van a extraer}
+En un principio los datos que se van a extraer son enlaces, dominios, direcciones de correo, direcciones IP y en el caso de los archivos en formato EML, sus cabeceras. 
+
+\subsection{Tipo y cantidad de relaciones}
+El tipo de relaciones serán normalmente de muchos a muchos, ya que de un único mensaje se pueden extraer varios datos de un mismo tipo, que a vez pueden estar múltiples mensajes.
+
+Respecto a la cantidad de relaciones, mientras que de un correo no se deben extraer demasiados datos, un dato concreto puede aparecer en una gran cantidad de correos, por lo que en función del diseño que se haga, recuperar todos los correos en los que aparece un determinado dato podría llegar a ser una operación muy costosa. 
+
+\subsection{Forma de identificar los datos}
+En este proyecto y debido a la naturaleza de los datos que se tratan, algo que pudiera ser trivial como es el hecho de identificar un dato concreto, se vuelve una tarea más compleja, pues estos pueden ser relativamente grandes y no se deben tratar de la misma manera que otros de menor tamaño, como tal vez puede ser un número o una fecha. 
+
+También es importante el hecho de poder “navegar” mediante enlaces, ya que no tendría sentido poner como dirección de un mensaje su propio contenido.
+
+Este problema se puede solucionar de múltiples formas, una de ellas, consistiría en asignar a cada dato un valor numérico e incremental, de modo que se podría acceder al dato número 1, 2, …, n. Este sistema permite tener un control del número de elementos que se han analizado, además ocupa muy poco (con 4 bytes por elemento se podrían numerar 4.294.967.296 elementos de dicho tipo), permitiría hacer búsquedas rápidas, al poder guardar en memoria una gran cantidad de elementos y no guarda relación alguna con el elemento al que identifica.
+
+Sin embargo, también presenta los siguientes problemas, y es que, al no guardar relación con el elemento, no se puede obtener el identificador únicamente con el valor del dato, por lo que requiere de una consulta del valor completo a la base de datos, que, en el caso de un mensaje, puede ser de gran tamaño.
+
+Para evitar esta falta de relación entre el valor de un elemento y su identificación se puede utilizar una función hash, que sea rápida y que devuelva valores pequeños. Esto solucionaría la falta de correlación entre identificador y valor, facilitaría la navegación, permitiría búsquedas rápidas, (Constantes en teoría) y simplificaría las búsquedas de datos grandes como los mensajes.
+
+Aunque también presenta problemas, el mayor de ellos es que ocupa mucho más espacio que una identificación numérica, lo que, en un sistema relacional, puede hacer que las uniones de tablas sean mucho más lentas. Además, también se pierde el orden de inserción, pero tampoco es importante en este caso.
+
+Por tanto, una solución interesante puede ser adoptar ambos modelos, por un lado, tener un índice numérico e incremental y por otro un índice de tipo hash para buscar en caso de no tener el identificador numérico. Por ejemplo, para comprobar si un mensaje ya ha sido o no analizado se podría utilizar su hash, mientras que para las uniones de tablas de podría utilizar el identificador numérico. 
+
+Esta solución también presenta el problema de sobrecoste que conlleva guardar el hash y que puede ser mayor o menor en función de los bits que ocupe la función elegida.
+
+Para ello, ha hecho un pequeño estudio del sobrecoste generado por cada millón de elementos insertados según algunas de las funciones hash más conocidas en este momento. No se va a tener en cuenta el coste computacional de dicha función al considerarlo relativamente bajo en todas ellas. 
+
+También se va a considerar la probabilidad de colisiones suponiendo que todos los valores son equiprobables. Para hacer este cálculo y teniendo en cuenta la paradoja del cumpleaños, se va a calcular la probabilidad de colisiones mediante la siguiente fórmula \(k=\sqrt{2^n}\) siendo n el tamaño del hash en bits y k la probabilidad de que haya una colisión.
+
+\begin{table}[t]
+    \begin{center}
+        \begin{tabular}{| m{1.5cm} || m{2.3cm} | m{3cm} | m{3.8cm} |}
+            \hline
+            Función hash	& Tamaño del hash (Bytes) & Probabilidad de colisión &	Sobrecoste generado (Por cada millón) MB \\ 
+            \hline \hline 
+             & & &\\  [0.03cm]
+            MD5	    & 16	& \(1.84467\times10^{19}\)	    & 15.25879 \\  [0.3cm]
+            SHA1	& 20	& \(1.20893\times10^{24}\)	& 19.07349 \\ [0.3cm]
+            SHA256	& 32	& \(3.40282\times10^{38}\)	& 30.51758 \\ [0.3cm]
+            SHA512	& 64	& \(1.15792  \times10^{77}	 \)    & 61.03516 \\ [0.3cm]
+            \hline
+        \end{tabular}
+    \caption{Tabla comparativa de las distintas funciones hash}
+    \label{table:funciones_hash}
+    \end{center}
+\end{table}
+
+En base a la tabla \ref{table:funciones_hash}, puede verse que el sobrecoste por cada millón de documentos es completamente asumible en todos los casos, pues incluso con 10 millones de elementos, en el peor de los casos, es decir usando la función SHA512, los hashes tendrían un coste de tan solo 610MB, lo que no es algo exagerado teniendo en cuenta la cantidad de elementos que se tendrían y las ventajas que se obtienen. 
+
+Sin embargo, y dado que el hash se va a utilizar únicamente como identificador, es mucho más interesante usar una función que genere un hash de menor tamaño como podría ser MD5 o SHA1 ya que el tamaño es similar. 
+
+Finalmente se va a optar por SHA1 debido a que MD5 en la actualidad está roto, y aunque esto no debería afectar directamente al servicio, pues no se pretender obtener ningún tipo de seguridad, sí que se podría aprovechar esta vulnerabilidad por parte de algún ciberdelincuente añadiendo él mismo un mensaje falso que genere el mismo hash que un posible correo malicioso enviado por el mismo ciberdelincuente, evitando de esta manera que sea analizado en la plataforma. 
+
+A la hora de la elección de un lenguaje de programación, será necesario que este cuente con dicha función o en su defecto, que haya alguna implementación de esta ya desarrollada, pues no es objetivo de este trabajo desarrollarla.
+
+\subsection{Forma de mostrar los datos}
+La forma de mostrar los datos puede indicar o al menos sugerir de qué manera se deben almacenar para facilitar su posterior visualización.
+
+En el caso de este proyecto, dado un elemento cualquiera debe existir un enlace a todos los elementos que estén relacionados con él y cuyo texto será su valor o en caso de ser muy extenso, su hash.
+
+De este modo la visualización de los distintos elementos queda como sigue: 
+
+\subsubsection{Visualización de un mensaje}
+En la visualización de un mensaje se tendrá que poder ver, toda la información referente a él (Tipo de archivo, fecha de análisis, score, …), y todos los datos extraídos, así como un enlace a los mismos (Enlaces, dominios, direcciones IP, …)
+
+\subsubsection{Visualización de un dato cualquiera extraído de un mensaje}
+En la visualización de cualquier dato extraído de un mensaje será importante que además de la información relacionada con el mismo (Valor, fecha de análisis, score, …), se puedan listar todos los mensajes en donde ha aparecido dicho dato, así como un enlace a cada uno de ellos. El texto mostrado en este caso será el hash dl mensaje.
+
+El poder listar los mensajes donde aparece un dato concreto es importante para poder llevar a cabo investigaciones, o identificar nuevos mensajes perniciosos en base a elementos comunes con otros mensajes ya analizados.
+
+\subsection{Cómo se va a buscar información y qué búsquedas se van a realizar}
+Saber qué búsquedas van a hacer y con qué datos se cuenta para llevarlas a cabo es necesario para determinar por un lado cómo se guarda la información y, por otro lado, las relaciones necesarias para que se puedan realizar las dichas consultas.
+
+En este caso, dado un documento se debe poder obtener a cada uno de los datos extraídos de él y dado un dato cualquiera, tienen que poder obtenerse tanto los correos en los que aparece, como otros elementos relacionados con él. Por ejemplo, dado un domino, además de los mensajes donde está presente, también se debe obtener información sobre todos los enlaces analizados pertenecientes a dicho dominio.
+
+Las búsquedas generalmente serán de elementos concretos, es decir, no será común realizar búsquedas por rango. Tampoco será común usar los operadores de mayor o menor.
+
+Se debe poder buscar un elemento tanto por su valor, o por su hash en caso de ser un elemento de gran tamaño, así como por su identificador numérico, ya que su búsqueda puede ser mucho más rápida. 
+
+En un principio no será habitual buscar elementos por información relativa a ellos, por ejemplo, elementos analizados en una determinada fecha o con una determinada característica. 
+
+También es importante señalar que al principio las operaciones de inserción serán las más comunes y que a medida que se vaya haciendo uso del servicio, las operaciones de consulta serán las que prevalecerán. Además, es necesario que el servicio no sea demasiado lento, pues no sería práctico, por este motivo, debe prevalecer la velocidad de consulta sobre la inserción. 
+
+\subsection{Cantidad de información que se va a almacenar}
+Respecto a la cantidad de información a almacenar, el sistema debe estar preparado para guardar un gran volumen de información, de decenas o cientos de millones de correos electrónicos, por lo que contar con un sistema escalable es crítico.  
+
+A la hora de realizar este informe, se cuentan con más de 8.5 millones de correos electrónicos perniciosos. 
+
