@@ -50,7 +50,7 @@ Para ello, ha hecho un pequeño estudio del sobrecoste generado por cada millón
 
 También se va a considerar la probabilidad de colisiones suponiendo que todos los valores son equiprobables. Para hacer este cálculo y teniendo en cuenta la paradoja del cumpleaños, se va a calcular la probabilidad de colisiones mediante la siguiente fórmula \(k=\sqrt{2^n}\) siendo n el tamaño del hash en bits y k la probabilidad de que haya una colisión.
 
-\begin{table}[t]
+\begin{table}[htbp]
     \begin{center}
         \begin{tabular}{| m{1.5cm} || m{2.3cm} | m{3cm} | m{3.8cm} |}
             \hline
@@ -63,7 +63,7 @@ También se va a considerar la probabilidad de colisiones suponiendo que todos l
             SHA512	& 64	& \(1.15792  \times10^{77}	 \)    & 61.03516 \\ [0.3cm]
             \hline
         \end{tabular}
-    \caption{Tabla comparativa de las distintas funciones hash}
+    \caption{Comparativa de las distintas funciones hash}
     \label{table:funciones_hash}
     \end{center}
 \end{table}
@@ -109,3 +109,160 @@ Respecto a la cantidad de información a almacenar, el sistema debe estar prepar
 
 A la hora de realizar este informe, se cuentan con más de 8.5 millones de correos electrónicos perniciosos. 
 
+
+\section{Información sobre los datos que se va a extraer}
+Como ya se ha comentado con anterioridad, uno de os objetivos del proyecto es extraer distintos tipos de datos y relacionarlos con otros correos electrónicos. 
+
+En concreto se quiere extraer: 
+\begin{itemize}
+    \item Direcciones IP
+    \item Dominios
+    \item Enlaces 
+    \item Direcciones de correo electrónico
+\end{itemize}
+
+Una forma sencilla de identificar y extraer este tipo de datos relativamente bien definidos es mediante expresiones regulares. El hacerlo de esta manera requiere que se sepa de manera muy precisa cómo están formados, qué símbolos tienen o no, qué tamaño,…
+
+Por este motivo, se va a hacer un análisis exhaustivo de los distintos tipos de datos que se quieren obtener, especialmente en lo que a estructura, formato, tamaño y símbolos se refiere. Sin embargo, el análisis será eminentemente práctico, sin entrar detalles técnicos que no tengan relevancia a la hora de crear una expresión regular para evitar que la longitud de la memoria crezca en exceso. 
+
+De esta manera se podrán crear unas expresiones regulares muy precisas que generen el mínimo número de falsos negativos posibles.
+
+\subsection{Direcciones IP}
+Una dirección IP es un conjunto de números y/o letras que identifican de manera única a cada uno de los dispositivos de una red. 
+
+Existen dos versiones, la versión 4 y la versión 6, cada una tiene un formato distinto. \cite{ipv4_v6}
+
+\subsubsection{IP versión 4 (IPv4)}
+Cuando se habla de IPv4 es importante mencionar que su formato no se ha especificado como tal en ningún RFC, quedando definido por el uso y por cómo fue descrito en otros RFCs. Con esto en mente se va a usar el RFC790 \cite{rfc790}, donde se realiza la asignación de clases de redes, a distintos grupos de direcciones IP, para definir su formato. 
+
+Como se puede observar en dicho RFC, se podría decir que por convención una dirección IP en versión 4 está definida por un conjunto de cuatro números, separados entre sí por un punto y cuyo valor del 0 al 255. Pueden ser escritos tanto con ceros a la izquierda o sin ellos, o lo que es lo mismo, tanto el 3 como el 03, como el 003 son válidos y tienen exactamente el mismo valor. Esto hace que una misma dirección pueda ser escrita de múltiples formas, por ejemplo 192.168.0.1 podría ser escrita como 192.168.000.001 ò 192.168.00.01 ò 192.168.000.01, etc. 
+ 
+
+
+\subsubsection{IP versión 6 (IPv6)}
+La representación textual de una dirección IPv6 es muy flexible lo que hace que sea mucho más complicado crear una expresión regular para identificarlas. Su formato de definió en el RFC 4291, en la sección 2.2 \cite{rfc4291_section2_2}, aunque debido a que ciertos operadores estaban teniendo problemas por su flexibilidad, la IEFT publicó el RFC 5952 \cite{rfc5952} con ciertas recomendaciones sobre su formato escrito para facilitar la implementación del protocolo. 
+
+En líneas generales una dirección IP en versión 6 está representada por 8 números hexadecimales de cuatro cifras, separados entre sí por dos puntos verticales (“:”) y escritos en normalmente en minúsculas, aunque también pueden estar escritos en mayúsculas. 
+
+A continuación, se van a comentar algunas de las posibles variaciones a la hora de representar textualmente una dirección de este tipo. 
+ 
+\paragraph{Omitir ceros a la izquierda}
+Los 0 a la izquierda pueden (o no) ser omitidos y el valor de la dirección no se altera. Por ejemplo, las siguientes direcciones, pese a estar escritas de distinta forma, tienen el mismo valor.  
+
+      2001:db8:aaaa:bbbb:cccc:dddd:eeee:0001
+
+      2001:db8:aaaa:bbbb:cccc:dddd:eeee:001
+
+      2001:db8:aaaa:bbbb:cccc:dddd:eeee:01
+
+      2001:db8:aaaa:bbbb:cccc:dddd:eeee:1
+
+\paragraph{Contraer los ceros}
+Si en una dirección uno o más números consecutivos son cero, se pueden eliminar. Esto puede hacerse una única vez.
+
+Por ejemplo:
+
+      2001:db8:aaaa:bbbb:0:0:0:1
+
+      2001:db8:aaaa:bbbb::1
+      
+Precisamente esta característica es la que hace sea complicado analizar una dirección IP en su versión 6, ya que múltiples opciones son posibles y todas correctas.
+
+\paragraph{Direcciones IPv4 embebidas}
+Una dirección IPv6 puede tener embebida una dirección IPv4 al final de esta, que será escrita con el mismo formato de una dirección IPv4. 
+
+Por ejemplo 
+
+    0:0:0:0:0:0:13.1.68.3
+
+    0:0:0:0:0:FFFF:129.144.52.38
+    
+Además, si se tiene en cuenta la propiedad anterior, podrían contraerse los ceros, quedado como sigue: 
+
+    ::13.1.68.3
+
+    ::FFFF:129.144.52.38
+
+\subsection{Dominios}
+Un dominio es una cadena de caracteres que está asociada a una o varias direcciones IP. Está regulados por un organismo internacional llamado ICANN del inglés (Internet Corporation for Assigned Names and Numbers; ICANN) \cite{icann} y su especificación viene recogida en el RFC 1035 \cite{rfc1035}
+
+\subsubsection{Formato}
+Según este RFC un dominio está formado por dos o más partes separadas entre sí por un punto <<.>>. 
+
+Siendo el formato como sigue: 
+
+[<Subdominio>.]<nombre de dominio>.[<SLD/2LD>.]<TLD>
+
+Donde: 
+\begin{itemize}
+    \item Subdominio: Los subdominios subpartes del dominio al que preceden. Puede haber tantos como se quiera.
+    \item Nombre de dominio: Se registra en el ICANN o la autoridad competente dependiendo del TLD o del SLD.
+    \item SLD/2LD: Son conocidos como dominios de segundo nivel y permiten una especificación de un dominio de primer nivel. Por ejemplo, <<co.es>> podría estar destinado a empresas comerciales españolas. Todos los SLDs registrados pueden ser consultados en Publicsuffix \cite{SLD_list}.
+    \item TLD: Son conocidos como dominios de primer nivel y son los gestionados por el ICANN. Todos los TLDs registrados se pueden encontrar en la web del IANA \cite{TLD_list}
+\end{itemize}
+
+Tener en cuenta los TLDs y los SLDs es muy importante para asignar correctamente los dominios y los subdominios, ya que no tener en cuenta los SLDs podría hacer que se considerasen nombres de dominio que no lo son. 
+
+Además, es una buena forma de detectar falsos positivos cuando se están buscando dominios en un documento de texto.
+
+\subsubsection{Tamaño}
+En la sección “2.3.4. Size limits” del RFC 1035, se indica que el tamaño máximo para el dominio son 255 completo caracteres y el de casa sección de 63 caracteres, aunque en la actualidad no suelen ser tan largos. 
+
+\subsubsection{Caracteres permitidos}
+Así mismo en la sección “2.3.3. Character Case” se indica que la codificación de un dominio debe ser ASCII e insensible a mayúsculas y minúsculas, aunque no obliga a ello. En el RFC 3490 \cite{rfc3490}, se recoge la posibilidad de usar caracteres Unicode aunque estos sean representados internamente como caracteres ASCII, en la práctica, los caracteres Unicode no son muy usados.
+
+Además, y según se especifica en el RFC 952 \cite{rfc952} y en el RFC 1123 \cite{rfc1123}, los únicos caracteres válidos dentro de un dominio son los caracteres alfanuméricos (A-Z) y (0-9), el guion medio (-) y el punto (.), aunque algunos servidores también permiten el guion bajo (\_).
+
+\subsection{Enlaces (URLs)}
+Los enlaces o URLs (del inglés Uniform Resource Locator) vienen definidas por el RFC 1738 \cite{rfc1738}, de especial interés la sección “3. Specific Schemes”. Una URL es a su vez un tipo de URI (del inglés Uniform Resource Identifier) definido en el RFC 3986 \cite{rfc3986}, de este último el apartado más interesante para el proyecto es la sección “3.3.  Path” en el cual se especifica el formato que debe tener y también en el “Apéndice A: Collected ABNF for URI”.
+
+También es interesante el RFC 3696 en la sección “4.1.  URI syntax definitions and issues” \cite{rfc3696_section4_1}, ya que se centra en las URLs cuyo esquema sea HTTP o HTTPS, y por tanto el más interesante para el proyecto .
+
+\subsubsection{Formato}
+El formato viene definido como sigue: 
+
+{http/https}://<dominio>[:<puerto>][/<ruta[<parámetros>]>]
+
+Donde:
+\begin{itemize}
+    \item http/https: Define el protocolo y aparecerá uno u otro. 
+    \item Dominio: su formato ya ha sido definido.
+    \item Puerto: No es muy usado, es un valor numérico que va del 0 al 65535.
+    \item Ruta: son distintas cadenas de texto que dan acceso a cada una de las páginas de un mismo dominio.
+    \item Parámetros: Son posibles valores que envían información extra al servidor. 
+\end{itemize}
+
+\subsubsection{Caracteres permitidos}
+Los caracteres permitidos en una URL son:
+\begin{itemize}
+    \item Cualquier carácter alfanumérico.
+    \item Cualquiera de los símbolos siguientes: - . \_ \~ ! \$ \& \' ( ) [ ] \* + , ; = : @ \# ? \/
+    \item El carácter \% precedido de un número hexadecimal de dos cifras. 
+\end{itemize}
+
+\subsubsection{Tamaño máximo}
+En principio una URL no tiene límite de tamaño tal y como se recoge en el RFC 7230 al final de la sección “3.1.1.  Request Line” \cite{rfc7230_section_3_1_1}, sin embargo y como también se menciona en el mismo RFC, sí hay ciertas restricciones por parte de los navegadores. Por ejemplo, la longitud máxima de una URL si se usa Internet Explorer es de 2083 caracteres en total \cite{maximum_url_length}.
+
+\subsection{Dirección de correo electrónico}
+La sintaxis de una dirección de correo electrónico viene definida en el rfc 5322 en la sección “3.4.1.  Addr\-Spec Specification” \cite{rfc5322_section_3_4_1}, sin embargo, en la definición de este RFC se centra mucho en la parte del dominio, que ya ha sido definida, por lo que es más útil el RFC 3696, concretamente su sección “3. Restrictions on email addresses” \cite{rfc3696_section_3}
+
+\subsubsection{Formato}
+El formato de una dirección de correo electrónico es de la siguiente forma: 
+
+<Parte local>@<dominio>
+
+Siendo:
+\begin{itemize}
+    \item Parte local: es la parte de la dirección que define al usuario.
+    \item Dominio: indica el dominio al que pertenece la dirección.
+\end{itemize} 
+
+\subsubsection{Caracteres permitidos}
+Los caracteres permitidos en el dominio ya han sido definidos.
+
+Los caracteres permitidos en la parte local pueden ser, cualquier carácter ASCII siempre que vaya entre comillas dobles o escapeado mediante el símbolo “\textbackslash”. No es necesario ni escapar, ni entrecomillar los caracteres alfanuméricos, ni los siguientes caracteres especiales entre paréntesis (! \# \$ \% \& ' * + - / = ?  \textasciicircum \_ ` . \textasciitilde \{ \} |).
+
+El punto (“.”), pese a estar permitido, no puede estar ni en la primera, ni en la última posición, tampoco puede haber más de dos seguidos. 
+
+\subsubsection{Tamaño máximo}
+El tamaño máximo de la parte local es de 64 caracteres, por lo que sumados a los 255 de la parte del dominio y el “@”, da un máximo de 320 caracteres. 
