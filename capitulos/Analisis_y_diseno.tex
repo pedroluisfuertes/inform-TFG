@@ -266,3 +266,38 @@ El punto (“.”), pese a estar permitido, no puede estar ni en la primera, ni 
 
 \subsubsection{Tamaño máximo}
 El tamaño máximo de la parte local es de 64 caracteres, por lo que sumados a los 255 de la parte del dominio y el “@”, da un máximo de 320 caracteres. 
+
+\section{Información sobre los tipos de archivo que se van a analizar}
+Como ya se ha comentado en este proyecto se van a tratar tres tipos de archivos. Los primeros de ellos y los más simples son los que están escritos en texto plano, los segundos y tal vez los más usuales son los escritos en formato HTML y finalmente y los más complejos son los archivos con formato EML.
+
+Durante esta sección es importante diferenciar entre codificación de caracteres (ASCII, UTF-8, Unicode) y formato de archivo (Texto plano, HTML o EML).
+
+\subsection{Archivos HTML}
+El formato HTML está definido por el W3C y cuya última versión es la 4.01 del 27 de marzo del 2018 y lo más interesante es lo referente a la sección “12.2 (The A element)” \cite{html_a_tag} ya que en ella se especifica cómo se definen los enlaces en el formato HTML. 
+
+\subsubsection{Formato}
+Normalmente un enlace en formato HTML se define de la siguiente forma
+
+<a href:”{URI}”>{texto}</a>
+
+Donde: 
+
+\begin{itemize}
+    \item URI: Será una URI tal y como ya ha sido definida, aunque generalmente será una URL. De todos los posibles tipos, tienen especial relevancia las URLs con esquema HTTP, HTTPS y MAILTO.
+    \item Texto: Será el texto que se muestre al usuario.
+\end{itemize}
+
+\subsection{Archivos EML}
+El formato EML es el más usado para guardar correos electrónicos. Aunque su especificación no está en ningún RFC concreto, en general cumple con lo definido en el RFC 5322\cite{rfc5322}, del cual son especialmente interesantes los puntos 2 “Lexical Analysis of Messages” y 3 “Syntax”. 
+
+También es interesante el RFC 4021\cite{rfc4021} donde se detallan todos los tipos de cabeceras oficiales, su formato, y una pequeña descripción de estas. En el RFC 6854\cite{rfc6854}, en concreto el punto 2 “Allowing Group Syntax in "From:" and "Sender:"” se actualiza la sintaxis de los campos “From” y “Sender”, campos muy relevantes en este proyecto ya que pueden dar información sobre el emisor del correo.
+
+\subsubsection{Formato}
+En líneas generales y sin entrar en detalles concretos un archivo EML está formado por un conjunto de cabeceras y opcionalmente un cuerpo. 
+
+Cada cabecera está formada por dos campos, por el nombre y por el cuerpo, ambos están formados por una cadena de caracteres ASCII y separados por “:”.
+
+El cuerpo está separado de las cabeceras mediante una línea vacía y está también compuesto por una secuencia de caracteres codificada ASCII. 
+
+Es importante señalar que un único archivo EML puede contener en el interior textos con formato HTML o en texto plano.
+
