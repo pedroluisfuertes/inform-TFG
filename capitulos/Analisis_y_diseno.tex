@@ -109,10 +109,10 @@ La información siguiente es específica de los mensajes.
 
 \subsubsection{Direcciones IP}
 La información siguiente es específica de las direcciones IP.
-\subsubsection{}
 \begin{itemize}
     \item Versión: Indicara si las direcciones es IPv4 o IPv6.
 \end{itemize}
+
 \subsubsection{Dominios}
 La información siguiente es específica de los dominios.
 \begin{itemize}
@@ -120,18 +120,19 @@ La información siguiente es específica de los dominios.
     \item Subdominio: en caso de ser un dominio, se    indicarán todos los subdominios analizados de dicho dominio.
     \item Tipo: Legítimo, phishing. 
 \end{itemize}
+
 \subsubsection{Enlaces}
 La información siguiente es específica de los enlaces.
 \begin{itemize}
     \item Domino: Se indicará el dominio o el subdominio al que pertenece.
     \item Tipo: Legítimo, phishing. 
 \end{itemize}
+
 \subsubsection{Direcciones de correo electrónico}
 La información siguiente es específica de las direcciones de correo electrónico.
 \begin{itemize}
     \item Domino: Se indicará el dominio o el subdominio al que pertenece.
     \item Tipo: Legítimo, phishing. 
-    
 \end{itemize}
 
 
@@ -345,3 +346,109 @@ El cuerpo está separado de las cabeceras mediante una línea vacía y está tam
 
 Es importante señalar que un único archivo EML puede contener en el interior textos con formato HTML o en texto plano.
 
+\section{Patrones maliciosos comúnmente usados en el correo electrónico}
+Hasta el momento únicamente se ha analizado qué tipo de información se va a analizar, qué formato tiene y qué limitaciones de codificación y/o tamaño tienen. 
+
+Entender esto con claridad permite entender algunas de las técnicas usadas por los ciberdelincuentes para poder atacar a sus víctimas. 
+
+A continuación, se van a exponer una serie de patrones, que, si bien no permiten saber con seguridad de que se trate de un ataque, sí que permiten al menos tener cierta sospecha de que el correo sea malicioso.
+
+Para el desarrollo de esta sección se han consultado entre otros los siguientes artículos 
+
+\begin{itemize}
+    \item A Framework for Detection and Measurement of Phishing Attacks \cite{phishing1}
+    \item PhishDef: URL Names Say It All \cite{phishing2}
+    \item Learning to detect phishing emails \cite{phishing3}
+\end{itemize}
+
+\subsection{Patrones maliciosos en Dominios}
+\subsubsection{Usar una gran cantidad de subdominios}
+Un patrón bien conocido es utilizar una gran cantidad de subdominios con el objetivo de camuflar en ellos el dominio principal. 
+
+En este tipo de ataques, el dominio a suplantar suele estar escrito al principio, seguido de más subdominios, hasta llegar el domino principal. De esta manera se dificulta su identificación. 
+
+Un ejemplo de este tipo podría ser: 
+\begin{verbatim}
+    http://www.ugr.es.custsupportref1007.dllconf.info/r1/vm/
+\end{verbatim}
+Como se puede observar, la URL anterior se hace pasar por el dominio “www.ugr.es”, sin embargo, su dominio principal es “dllconf.info”.
+
+Para detectar este tipo de ataque se podrían identificar el número de puntos “.” que tiene un dominio, de modo que cuantos más tenga, mayor es la probabilidad de que sea malicioso.
+
+\subsection{Patrones maliciosos en Enlaces}
+\subsubsection{Usar como dominio una IP}
+Este patrón consiste en despistar al usuario usando como dominio una dirección IP y escribiendo en la ruta el dominio a suplantar. De esta forma si el usuario lee la dirección, el único domino que verá como tal es el suplantado y por tanto le dará legitimidad a la página. 
+
+Un ejemplo de este patrón es: 
+\begin{verbatim}
+    http://211.233.39.145/www.ugr.es/login.html 
+\end{verbatim}
+Observando la dirección anterior puede verse como el único dominio como tal que aparece es el de “www.ugr.es”, aunque realmente el host es la IP “211.233.39.145”.
+
+Detectar este tipo de patrón podría consistir en analizar si la máquina un dominio o una dirección IP. En caso de ser una IP, se podría decir que es posiblemente maliciosa. 
+
+\subsubsection{Embeber una URL en la ruta de otra URL}
+Una variación del patrón anterior es, en vez de usar una dirección IP, usar un dominio, generalmente muy corto y añadir la dirección a suplantar en la ruta, al igual que en el caso anterior.
+
+Un ejemplo de este caso sería: 
+\begin{verbatim}
+    http://fkDom.tl/www.ugr.es/login.html 
+\end{verbatim}
+Al hacer esto, un usuario que no tenga cuidado no se percatará de que el dominio realmente es “fkDom.tl” y no “www.ugr.es” como el hubiera esperado. 
+
+Para detectar este tipo de ataque, se podría comprobar que, en la ruta de un enlace, no haya ninguna otra ruta y en caso e haberla, tanto el dominio como la dirección completa serían sospechosos de ser perniciosos. 
+
+\subsection{Patrones en archivos HTML}
+\subsubsection{Ofuscación de la URL original una etiqueta tipo a}
+Uno de los métodos más comunes y simples consiste en hacer uso de la etiqueta <a> de HTML mostrando al usuario un valor distinto al recurso enlazado realmente mediante el atributo “href” de dicha etiqueta. 
+
+Este patrón puede darse con varios de los posibles recursos que pueden ser enlazados mediante esta etiqueta. La cantidad de recursos depende en gran medida del soporte que tenga navegador para cada uno de los distintos esquemas asociados a cada recurso.
+
+Todos los esquemas disponibles y a qué tipo de recurso que enlazan, está definidos por el IANA \cite{Schemas_dispo}
+
+De entre todos ellos destacan los siguientes, por tener soporte en todos los navegadores y ser los más utilizados.
+
+\paragraph{HTTP/HTTPS}
+Es el caso más habitual, en este caso en el campo de texto se muestra un enlace a una página que no se corresponde con la enlazada. 
+
+Un ejemplo sería \verb|<a href="https://www.ujr.es/">www.ugr.es</a>|
+
+Este método es especialmente útil cuando se trata de ataques dirigidos a usuarios de dispositivos móviles ya que, en ellos, o no se ve la dirección en la que están navegado o sólo se ve parcialmente, lo cual dificulta en gran medida percatarse de este ataque. 
+
+\paragraph{MAILTO}
+Permite enviar abrir la aplicación de correo por defecto y añadir directamente al destinatario.En este caso se podría mostrar al usuario un email distinto al que se envía el mensaje. 
+
+Por ejemplo: \verb|<a href="mailto:support@ujr.es"> support@ugr.es</a>|
+
+\paragraph{Solución}
+Una posible forma de detectar esta amenaza es, en primer lugar, comprobar si el texto mostrado al usuario es un enlace y en caso de serlo, compararlo con el enlace escrito en el atributo href de la etiqueta <a>. En caso de ser distinto, el enlace del atributo href sería podría ser un enlace malicioso. 
+
+\subsubsection{Uso de JavaScript}
+Cuando un correo electrónico se abre en el navegador y está en formato HTML, puede contener código JavaScript que se ejecute automáticamente al abrirse. Si bien esto es hago normal en la web, no suele serlo en un mensaje de correo, ya que su contenido suele ser estático. 
+
+Este tipo de código siempre va asociado a una etiqueta \verb|<script></<script>|, por tanto, una forma sencilla de detectar este patrón es simplemente comprobar si esta etiqueta aparece o no en el mensaje. 
+
+\section{Integraciones de terceros}
+A lo largo de esta sección se va a hablar de algunos servicios de terceros que pueden complementar los análisis de la plataforma. 
+
+Algunos de ellos están relacionados directamente con la ciberseguridad y ya han sido descritos anteriormente, otros son de propósito general, pero pueden aportar información interesante a la hora de analizar un correo sospechoso. 
+
+Para cada servicio se especificará en qué casos será relevante, cómo podría usarse y qué información adicional podría aportar.
+
+\subsection{Virus Total}
+Permite analizar archivos, enlaces, dominios y direcciones IP por varias decenas de servicios especializados dando así una visión más completa. 
+
+Podría utilizarse para analizar alguno de los tipos de datos anteriores, que salgan como sospechosos o de los que el usuario dude.
+
+\subsection{Metadefender}
+Es muy similar a Virus Total y por tanto de podría utilizar como alternativa a este. 
+
+\subsection{Have I been pwned}
+Permite saber si un correo ha estado involucrado en una brecha de seguridad. 
+
+Podría utilizarse para saber si por ejemplo la dirección de la que proviene el correo ha estado expuesta en alguna brecha de seguridad, pudiendo sospechar de ella en caso de haber estado involucrada. 
+
+\subsection{Whois}
+Da información sobre un dominio o una dirección IP, como cuándo se registró o a quién pertenece.
+
+Se puede utilizar para obtener más información sobre dominios sospechosos. También se puede utilizar para intentar descubrir a un ciberdelincuente. 
