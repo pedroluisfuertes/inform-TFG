@@ -79,17 +79,61 @@ A la hora de la elección de un lenguaje de programación, será necesario que e
 \subsection{Forma de mostrar los datos}
 La forma de mostrar los datos puede indicar o al menos sugerir de qué manera se deben almacenar para facilitar su posterior visualización.
 
-En el caso de este proyecto, dado un elemento cualquiera debe existir un enlace a todos los elementos que estén relacionados con él y cuyo texto será su valor o en caso de ser muy extenso, su hash.
+Dependiendo del tipo de dato se puede mostrar una información u otra, aunque hay información común a todos los datos.
 
-De este modo la visualización de los distintos elementos queda como sigue: 
+A continuación, se va a indicar la información común a todos los elementos y la asociada a cada uno de ellos. 
 
-\subsubsection{Visualización de un mensaje}
-En la visualización de un mensaje se tendrá que poder ver, toda la información referente a él (Tipo de archivo, fecha de análisis, score, …), y todos los datos extraídos, así como un enlace a los mismos (Enlaces, dominios, direcciones IP, …)
 
-\subsubsection{Visualización de un dato cualquiera extraído de un mensaje}
-En la visualización de cualquier dato extraído de un mensaje será importante que además de la información relacionada con el mismo (Valor, fecha de análisis, score, …), se puedan listar todos los mensajes en donde ha aparecido dicho dato, así como un enlace a cada uno de ellos. El texto mostrado en este caso será el hash dl mensaje.
+\subsubsection{Información común a todos los elementos}
+La información siguiente la tendrán todos los elementos visualizados en la plataforma, sean o no mensajes. 
+\begin{itemize}
+    \item Valor del elemento.
+    \item Hash: Es el hash del valor del elemento. 
+    \item Fuente(s): Indica de dónde se ha obtenido el dato, puede ser la persona que publicó el mensaje o en caso de un enlace, la fuente podría ser un mensaje. 
+    \item Tipo: Será un array con distintos posibles valores donde los usuarios podrán votar el cuál de esos tipos es.  
+    \item Fecha de análisis: indica cuándo se analizó el mensaje. 
+    \item Score: indica la maliciosidad del elemento, pudiendo ser fiable o malicioso
+\end{itemize}
+
+También es importante indicar que en la visualización de cualquier dato extraído de un mensaje será importante que, además de la información relacionada con el mismo (Valor, fecha de análisis, score, …), se puedan listar todos los mensajes en donde ha aparecido dicho dato, así como un enlace a cada uno de ellos. El texto mostrado en este caso será el hash del mensaje.
 
 El poder listar los mensajes donde aparece un dato concreto es importante para poder llevar a cabo investigaciones, o identificar nuevos mensajes perniciosos en base a elementos comunes con otros mensajes ya analizados.
+
+\subsubsection{Mensajes}
+La información siguiente es específica de los mensajes.
+\begin{itemize}
+    \item Formato: texto plano, HTML o EML (En el futuro podría haber más como CSV, JSON, XML, …)
+    \item Tipo: SPAM comercial, una estafa, una sextorsión o un ataque de phishing entre otros. 
+    \item Lenguaje: indica el lenguaje del mensaje (inglés, español, francés, …)
+\end{itemize}
+
+\subsubsection{Direcciones IP}
+La información siguiente es específica de las direcciones IP.
+\subsubsection{}
+\begin{itemize}
+    \item Versión: Indicara si las direcciones es IPv4 o IPv6.
+\end{itemize}
+\subsubsection{Dominios}
+La información siguiente es específica de los dominios.
+\begin{itemize}
+    \item Dominio: en caso de ser un subdominio, indicará el dominio al que pertenece. 
+    \item Subdominio: en caso de ser un dominio, se    indicarán todos los subdominios analizados de dicho dominio.
+    \item Tipo: Legítimo, phishing. 
+\end{itemize}
+\subsubsection{Enlaces}
+La información siguiente es específica de los enlaces.
+\begin{itemize}
+    \item Domino: Se indicará el dominio o el subdominio al que pertenece.
+    \item Tipo: Legítimo, phishing. 
+\end{itemize}
+\subsubsection{Direcciones de correo electrónico}
+La información siguiente es específica de las direcciones de correo electrónico.
+\begin{itemize}
+    \item Domino: Se indicará el dominio o el subdominio al que pertenece.
+    \item Tipo: Legítimo, phishing. 
+    
+\end{itemize}
+
 
 \subsection{Cómo se va a buscar información y qué búsquedas se van a realizar}
 Saber qué búsquedas van a hacer y con qué datos se cuenta para llevarlas a cabo es necesario para determinar por un lado cómo se guarda la información y, por otro lado, las relaciones necesarias para que se puedan realizar las dichas consultas.
