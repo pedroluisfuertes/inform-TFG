@@ -15,14 +15,14 @@ De manera general, se deben tener en cuenta los siguientes factores:
 \subsection{Tipos de datos}
 Dentro de los tipos de datos se tienen que distinguir dos tipos, por un lado, están los mensajes que el usuario envía y por otro los datos que se extraen de ellos. 
 \subsubsection{Tipos de datos a analizar}
-Dentro de los mensajes, este proyecto se centrará en mensajes de correo electrónico, por lo que hay fundamentalmente de tres tipos de datos, en texto plano, en HTML \cite{html_wiki} y en formato EML.
+Dentro de los mensajes, este proyecto se centrará en mensajes de correo electrónico, por lo que hay fundamentalmente de tres tipos de datos, en texto plano, en HyperText Markup Language (HTML) \cite{html_wiki} y en formato (EML).
 
 A la hora de elegir un lenguaje, contar con alguna librería que sea capaz de analizar dichos tipos de archivos es algo crítico, puesto que hacer un analizador de dichos tipos sería muy costoso y llevaría demasiado tiempo. Mientras la mayoría de los lenguajes modernos tienen librarías para leer archivos en HTML, no ocurre los mismo para el formato EML. 
 
-Sin embargo, el diseño no debe limitar la implementación de otros tipos de archivos tales como CSV, XML o JSON. 
+Sin embargo, el diseño no debe limitar la implementación de otros tipos de archivos tales como comma-separated values (CSV), Extensible Markup Language (XML) o JavaScript Object Notation (JSON). 
 
 \subsubsection{Tipos de datos que se van a extraer}
-En un principio los datos que se van a extraer son enlaces, dominios, direcciones de correo, direcciones IP y en el caso de los archivos en formato EML, sus cabeceras. 
+En un principio los datos que se van a extraer son enlaces, dominios, direcciones de correo, direcciones de Internet Protocol (IP) y en el caso de los archivos en formato EML, sus cabeceras. 
 
 \subsection{Tipo y cantidad de relaciones}
 El tipo de relaciones serán normalmente de muchos a muchos, ya que de un único mensaje se pueden extraer varios datos de un mismo tipo, que a vez pueden estar múltiples mensajes.
@@ -185,7 +185,7 @@ Como se puede observar en dicho RFC, se podría decir que por convención una di
 
 
 \subsubsection{IP versión 6 (IPv6)}
-La representación textual de una dirección IPv6 es muy flexible lo que hace que sea mucho más complicado crear una expresión regular para identificarlas. Su formato de definió en el RFC 4291, en la sección 2.2 \cite{rfc4291_section2_2}, aunque debido a que ciertos operadores estaban teniendo problemas por su flexibilidad, la IEFT publicó el RFC 5952 \cite{rfc5952} con ciertas recomendaciones sobre su formato escrito para facilitar la implementación del protocolo. 
+La representación textual de una dirección IPv6 es muy flexible lo que hace que sea mucho más complicado crear una expresión regular para identificarlas. Su formato de definió en el RFC 4291, en la sección 2.2 \cite{rfc4291_section2_2}, aunque debido a que ciertos operadores estaban teniendo problemas por su flexibilidad, la Internet Engineering Task Force (IEFT) publicó el RFC 5952 \cite{rfc5952} con ciertas recomendaciones sobre su formato escrito para facilitar la implementación del protocolo. 
 
 En líneas generales una dirección IP en versión 6 está representada por 8 números hexadecimales de cuatro cifras, separados entre sí por dos puntos verticales (“:”) y escritos en normalmente en minúsculas, aunque también pueden estar escritos en mayúsculas. 
 
@@ -236,14 +236,14 @@ Según este RFC un dominio está formado por dos o más partes separadas entre s
 
 Siendo el formato como sigue: 
 
-[<Subdominio>.]<nombre de dominio>.[<SLD/2LD>.]<TLD>
+[<Subdominio>.]<nombre de dominio>.[<SLD>.]<TLD>
 
 Donde: 
 \begin{itemize}
     \item Subdominio: Los subdominios subpartes del dominio al que preceden. Puede haber tantos como se quiera.
-    \item Nombre de dominio: Se registra en el ICANN o la autoridad competente dependiendo del TLD o del SLD.
-    \item SLD/2LD: Son conocidos como dominios de segundo nivel y permiten una especificación de un dominio de primer nivel. Por ejemplo, <<co.es>> podría estar destinado a empresas comerciales españolas. Todos los SLDs registrados pueden ser consultados en Publicsuffix \cite{SLD_list}.
-    \item TLD: Son conocidos como dominios de primer nivel y son los gestionados por el ICANN. Todos los TLDs registrados se pueden encontrar en la web del IANA \cite{TLD_list}
+    \item Nombre de dominio: Se registra en el ICANN o la autoridad competente dependiendo del top-level domain (TLD) o del second-level domain (SLD).
+    \item SLD: Son conocidos como dominios de segundo nivel y permiten una especificación de un dominio de primer nivel. Por ejemplo, <<co.es>> podría estar destinado a empresas comerciales españolas. Todos los SLDs registrados pueden ser consultados en Publicsuffix \cite{SLD_list}.
+    \item TLD: Son conocidos como dominios de primer nivel y son los gestionados por el ICANN. Todos los TLDs registrados se pueden encontrar en la web del Internet Assigned Numbers Authority (IANA) \cite{TLD_list}
 \end{itemize}
 
 Tener en cuenta los TLDs y los SLDs es muy importante para asignar correctamente los dominios y los subdominios, ya que no tener en cuenta los SLDs podría hacer que se considerasen nombres de dominio que no lo son. 
@@ -254,14 +254,14 @@ Además, es una buena forma de detectar falsos positivos cuando se están buscan
 En la sección “2.3.4. Size limits” del RFC 1035, se indica que el tamaño máximo para el dominio son 255 completo caracteres y el de casa sección de 63 caracteres, aunque en la actualidad no suelen ser tan largos. 
 
 \subsubsection{Caracteres permitidos}
-Así mismo en la sección “2.3.3. Character Case” se indica que la codificación de un dominio debe ser ASCII e insensible a mayúsculas y minúsculas, aunque no obliga a ello. En el RFC 3490 \cite{rfc3490}, se recoge la posibilidad de usar caracteres Unicode aunque estos sean representados internamente como caracteres ASCII, en la práctica, los caracteres Unicode no son muy usados.
+Así mismo en la sección “2.3.3. Character Case” se indica que la codificación de un dominio debe ser ASCII del inglés (American Standard Code for Information Interchange) e insensible a mayúsculas y minúsculas, aunque no obliga a ello. En el RFC 3490 \cite{rfc3490}, se recoge la posibilidad de usar caracteres Unicode aunque estos sean representados internamente como caracteres ASCII, en la práctica, los caracteres Unicode no son muy usados.
 
 Además, y según se especifica en el RFC 952 \cite{rfc952} y en el RFC 1123 \cite{rfc1123}, los únicos caracteres válidos dentro de un dominio son los caracteres alfanuméricos (A-Z) y (0-9), el guion medio (-) y el punto (.), aunque algunos servidores también permiten el guion bajo (\_).
 
 \subsection{Enlaces (URLs)}
 Los enlaces o URLs (del inglés Uniform Resource Locator) vienen definidas por el RFC 1738 \cite{rfc1738}, de especial interés la sección “3. Specific Schemes”. Una URL es a su vez un tipo de URI (del inglés Uniform Resource Identifier) definido en el RFC 3986 \cite{rfc3986}, de este último el apartado más interesante para el proyecto es la sección “3.3.  Path” en el cual se especifica el formato que debe tener y también en el “Apéndice A: Collected ABNF for URI”.
 
-También es interesante el RFC 3696 en la sección “4.1.  URI syntax definitions and issues” \cite{rfc3696_section4_1}, ya que se centra en las URLs cuyo esquema sea HTTP o HTTPS, y por tanto el más interesante para el proyecto .
+También es interesante el RFC 3696 en la sección “4.1.  URI syntax definitions and issues” \cite{rfc3696_section4_1}, ya que se centra en las URLs cuyo esquema sea Hypertext Transfer Protocol (HTTP) o HTTP seguro (HTTPS), y por tanto el más interesante para el proyecto .
 
 \subsubsection{Formato}
 El formato viene definido como sigue: 
@@ -452,3 +452,4 @@ Podría utilizarse para saber si por ejemplo la dirección de la que proviene el
 Da información sobre un dominio o una dirección IP, como cuándo se registró o a quién pertenece.
 
 Se puede utilizar para obtener más información sobre dominios sospechosos. También se puede utilizar para intentar descubrir a un ciberdelincuente. 
+
