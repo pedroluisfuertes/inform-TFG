@@ -7,13 +7,11 @@ Esto es así hasta tal punto, que la solución para identificar estos correos de
 
 Todo esto refleja como los usuarios están en una clara situación de vulnerabilidad, especialmente los usuarios menos técnicos que no conocen cómo funciona realmente la tecnología y que están usando ¿Y es que acaso deberían?
 
-Bajo mi punto de vista, el enfoque de las grandes compañías sobre cómo atacar los problemas de seguridad que tienen el correo electrónico, está dirigido a personas con unos conocimientos que la mayoría de las personas no tienen y por ta nto sólo es útil para una minoría de usuarios del servicio. 
+Bajo mi punto de vista, el enfoque de las grandes compañías sobre cómo atacar los problemas de seguridad que tienen el correo electrónico, está dirigido a personas con unos conocimientos que la mayoría de las personas no tienen y por tanto sólo es útil para una minoría de usuarios del servicio. 
 
-Pero además, es que dichas compañías tampoco están exentas de ataques de esta naturaleza, esto se pone de manifiesto en algunos ataques llevados a cabo con éxito a empresas tecnológicas de máximo nivel, como pueden ser Google o Facebook, a las que un atacante les consiguió robar 121 millones de euros \cite{estafa_google_facebook}
+Pero además, es que dichas compañías tampoco están exentas de ataques de esta naturaleza, esto se pone de manifiesto en algunos ataques llevados a cabo con éxito a empresas tecnológicas de máximo nivel, como pueden ser Google o Facebook, a las que un atacante les consiguió robar 121 millones de euros \cite{estafa_google_facebook}. Y aunque no han trascendido más detalles del ataque, se podría haber utilizado lo que se conoce como ingeniería social, haciéndose pasar por empresas comerciales conocidas y utilizando detalles reales de estas, como firmas o logotipos. De este tipo de ataques ya advertía Kaspersky Lab en 2018. \cite{cifrasPhising}
 
 Todo esto lleva a pensar que actualmente sigue habiendo un gran agujero de seguridad en el correo electrónico y que las herramientas existentes no son suficientes ni siquiera para los expertos del sector. 
-
-
 
 \section{Aplicaciones relacionadas}
 A continuación, se van a analizar un conjunto de herramientas que, si bien no ofrecen soluciones completas a este problema, pueden ser buenos servicios en los que apoyarse para tratar de dar una solución más amplia y completa que las actuales.
@@ -26,12 +24,12 @@ Tal vez sea la mejor solución que se tiene actualmente para mitigar este tipo d
 Aunque, este tipo de herramientas tienen varios problemas asociados:
 
 \begin{itemize}
-    \item Su efectividad: Conseguir una herramienta con una efectividad del 100\% es prácticamente imposible y esto es algo que se debe asumir, sin embargo, hay ciertos filtros cuya efectividad bastante reducida.
+    \item La imposibilidad de detectar todos los correos maliciosos: Conseguir una herramienta con una efectividad del 100\% es prácticamente imposible y esto es algo que se debe asumir. Sin embargo, y debido por un lado a la gran cantidad de correos que son enviados cada día \cite{cifrasCorreo} y por otro que en torno a la mitad (52.48\%) son correos no deseados \cite{cifrasPhising} hace que sea prácticamente imposible detectarlos todos. 
     \item La imposibilidad de poner un filtro de este tipo: hay muchos servicios de correo electrónico que no permiten al usuario poner un filtro personalizado de correo no deseado. Ejemplos de estos servicios son Gmail u Outlook,  1500 \cite{usuarios_gmail} y 400 \cite{usuarios_hotmail} millones de usuarios respectivamente (¡Son muchos!)
     \item Una vez que el mensaje pasa el filtro, esta herramienta deja de ser efectiva, lo cual puede ser muy sencillo para un atacante, simplemente va probando con distintos correos hasta que consigue uno que lo pase. 
 \end{itemize}
 
-Un servicio de este tipo puede ser muy útil para un primer análisis si el mensaje es compatible. Normalmente tienen una larga trayectoria, son rápidas y tienen una efectividad comprobada.
+Un servicio de este tipo puede ser muy útil para un primer análisis si el mensaje es compatible. Normalmente tienen una larga trayectoria, son rápidos y tienen una efectividad comprobada.
 
 \subsection{Analizador de cabeceras}
 Un analizador de cabeceras de correo electrónico da información relevante y normalmente invisible al usuario sobre dicho correo. Estas cabeceras pueden aportar información muy útil como por ejemplo la ruta seguida por el mensaje, la ip del servidor de correo desde donde se envió o si ha pasado o no los filtros antispam del proveedor de correo. 
