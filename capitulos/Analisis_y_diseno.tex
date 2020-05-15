@@ -453,3 +453,141 @@ Da información sobre un dominio o una dirección IP, como cuándo se registró 
 
 Se puede utilizar para obtener más información sobre dominios sospechosos. También se puede utilizar para intentar descubrir a un ciberdelincuente. 
 
+\section{Elección de la base de datos}
+Debido a la gran cantidad de información que se va a manejar y al uso que se le va a dar a la base de datos, es el punto más importante que analizar, ya que una vez que se tenga una gran cantidad de datos almacenada, cambiar de sistema puede ser realmente complicado o simplemente imposible. 
+
+La elección de un sistema de gestión de información que permita tanto insertar como hacer búsquedas rápidas en algo fundamental y de lo que va a depender el éxito o el fracaso del proyecto.
+
+Tradicionalmente la información se guardaba en bases de datos relacionales interactuando con ellas mediante SQL. Esto ha hecho que en la actualidad haya multitud de gestores de bases de datos relacionales como MySQL\cite{MySQL}, MariaDB\cite{MariaDB}, SQLite\cite{SQLite}, PostgreSQL\cite{PostgreSQL} u Oracle\cite{Oracle} entre otros. Todos comparten el mismo lenguaje (SQL) para poder interactuar con ellos, aunque con pequeñas diferencias significativas, lo que hace que con algunos cambios se pueda cambiar de un sistema de gestión a otro y esto supone una gran ventaja.
+
+Por otro lado, y aunque con menos uso, también existen muchos otros tipos de gestores de base de datos, que o bien no usan en absoluto el lenguaje SQL, como bien podría ser el caso de Mongo DB\cite{MongoDB}, o bien, además de usar SQL tienen ciertas peculiaridades que hacen que no sean únicamente una base de datos relacional. 
+
+A diferencia de los sistemas relacionales, migrar de uno a otro, o incluso a uno relacional, suele suponer un gran cambio, no sólo a nivel de código, también a nivel conceptual y por tanto de diseño, por lo que elegir un sistema NoSQL, debe ser una elección meditada y analizada en detalle, ya que todos estos sistemas de almacenamiento suelen estar diseñados para tareas muy concretas y bien definidas, lo que hace que tengan ventajas e inconvenientes que hay que tener muy en cuenta.
+
+Independientemente del sistema que se elija, se deben tener en cuenta los siguientes puntos:
+
+\begin{itemize}
+    \item Soportado o no por Azure
+    \item Velocidad de las búsquedas
+    \item Conocimientos previos
+    \item Documentación
+    \item Librerías disponibles 
+    \item Facilidad para hacer relaciones entre datos
+    \item Escalabilidad
+\end{itemize}
+
+\subsection{Sistemas relacionales SQL}
+
+Son los sistemas más utilizados en la actualidad. Todos utilizan un lenguaje común para interactuar con ellos llamado lenguaje de consulta estructurada (Del inglés Structured Query Language, o SQL), aunque puede haber pequeñas diferencias entre ellos. 
+
+Permite el uso del álgebra y el cálculo relacional para interactuar con el gestor de la base de datos, permitiendo de esta forma, buscar, modificar, añadir y eliminar información. 
+
+Son usadas en multitud de proyectos de distinta envergadura por lo que su eficacia está muy probada, además de tener una amplia comunidad, una gran documentación y multitud de librerías para los distintos lenguajes de programación, algunas de ellas integradas dentro del propio lenguaje. 
+
+\subsubsection{Ventajas}
+\begin{itemize}
+    \item Facilidad para cambiar de un gestor a otro (MariaDB, MySQL, SqLite, Oragle, Postgre SQL)
+    \item Mucha documentación
+    \item Una gran comunidad
+    \item Conocimientos previos
+    \item Una gran cantidad de librerías para multitud de lenguajes de programación
+    \item Hacer relaciones entre es sencillo
+    \item Búsquedas relativamente rápidas
+    \item Respeta ACID
+\end{itemize}
+
+\subsubsection{Desventajas}
+\begin{itemize}
+    \item Inserciones lentas
+    \item Escalado más complicado
+    \item Esquema mucho más estricto
+    \item Programación más lenta \footnote{El tener conocimientos previos unido a la gran comunidad, pueden mitigar este problema.}
+\end{itemize}
+
+\subsubsection{Conclusiones}
+
+Usar un sistema de gestión de contenido relacional aporta una gran cantidad de ventajas, la mayor de ellas puede ser la velocidad de sus búsquedas, así como la facilidad para crear relaciones entre elementos. También es muy interesante que se pueda cambiar de un sistema a otro con relativa facilidad, en caso de que en el futuro uno de ellos cuente con ventajas adicionales sobre los demás. 
+
+A todo esto, hay que sumarle que al ser un sistema con una larga trayectoria cuenta con una gran documentación, una comunidad amplia, multitud de librerías para la mayoría de los lenguajes de programación modernos y además se ha estudiado durante la carrera.
+Los dos mayores problemas son por un lado la escalabilid
+ad, que, aunque posible, es complicada. Esto puede suplirse al usar servicios en la nube que escalan de manera transparente los recursos de la base de datos para mantener las prestaciones, de ahí la importancia de usar un sistema soportado por Azure. 
+
+El segundo problema es la lentitud de las inserciones, pero dado que los correos únicamente se van a insertar una única vez y que van a prevalecer las búsquedas sobre las inserciones, hace que, aunque este problema se deba tener en cuenta, no sea crítico siempre que el tiempo de inserción no se vuelva dramáticamente lento, en cuyo caso habría que escalar el sistema con la dificultad y el coste que esto supondría.
+
+\subsection{Mongo DB}
+Es un sistema gestor de bases de datos orientado a documentos, en vez de a tablas, y por tanto NoSQL. Concretamente este sistema de almacenamiento utiliza documentos en formato JSON, que se almacenan en formato BSON del término JSON binario y como lenguaje de consulta utiliza JavaScript.
+
+Al no ser un sistema estructurado, los documentos pueden ser distintos y no tener una estructura fija definida. 
+
+Su escalado horizontal es muy sencillo lo que asegura una gran disponibilidad y que no sea costoso. 
+\subsubsection{Ventajas}
+\begin{itemize}
+    \item Escalado horizontal y vertical: En Mongo escalar tanto horizontal como verticalmente es algo simple que no requiere prácticamente de configuración. 
+    \item Alta disponibilidad: que el escalado horizontal sea simple permite a Mongo tener una disponibilidad muy alta, ya que esta estructura permite una mejor respuesta a fallos eventuales del sistema. 
+    \item Es muy rápido en las inserciones y en las actualizaciones de datos. 
+    \item Tiene muchas más opciones para tartar datos de manera nativa. 
+\end{itemize}
+
+\subsubsection{Desventajas}
+\begin{itemize}
+    \item Las búsquedas son muy lentas.
+    \item No hay posibilidad nativa de hacer uniones entre colecciones. 
+    \item No respeta el modelo ACID.
+\end{itemize}
+
+\subsubsection{Conclusiones}
+Que Mongo esté orientado a documentos hace que sea un gestor ideal para esta aplicación ya que lo que se va a guardar mayoritariamente son mensajes, es decir, documentos. 
+
+Además, su tiene una gran velocidad de inserción, un escalado horizontal prácticamente nativo, y que los documentos no tengan una estructura fija por lo que se pueden personalizar de modo que se minimicen las búsquedas, hacen de Mongo una opción a tener muy en cuenta. 
+
+También posee una gran cantidad de librerías para multitud de lenguajes de programación, una documentación muy completa y aunque no cuenta con la misma comunidad que los sistemas estructurados, sí que es bastante amplia por lo que no es complicado encontrar ayuda por parte de otros usuarios. 
+
+Sin embargo, Mongo también presenta problemas importantes como sus búsquedas lentas, el hecho de tener que mantener la integridad de los datos de manera manual o la imposibilidad de hacer uniones entre datos de manera sencilla y rápida. Y es que, como se ha comentado anteriormente las búsquedas prevalecen sobre las inserciones, además hay una gran cantidad de relaciones que serían complicadas de mantener.
+Otro punto débil es que, la posibilidad de migrar a otro sistema supondría el tener que comenzar desde cero, puesto que no hay ningún sistema compatible o similar. 
+
+\subsection{Apache Cassandra}
+Es un sistema de almacenamiento de datos que destaca por su escalado horizontal al ser una base de datos distribuida de escalado lineal, lo que es muy interesante ya permite predecir el número de nodos que se van a necesitar en función del número de peticiones que se tengan y las peticiones que es capaz de atender un único nodo. Esto quiere decir, que, si con un único nodo se pueden atender 1000 consultas por segundo, con dos se podrán atender 2000 y así sucesivamente \cite{Apache_Cassandra}. 
+
+Su modelo de datos está basado en filas de columnas de clave-valor. 
+\subsection{Ventajas}
+\begin{itemize}
+    \item Escalado horizontal y lineal.
+    \item Velocidad de acceso.
+\end{itemize}
+\subsubsection{Desventajas}
+\begin{itemize}
+    \item Las relaciones entre elementos son complicadas.
+    \item Es un cambio de paradigma complicado.
+    \item La documentación no está acabada \cite{Apache_Cassandra_docu}.
+    \item Nunca se tienen conocimientos previos.
+\end{itemize}
+\subsubsection{Conclusión}
+Lo más interesante de Cassandra es sin duda su escalado horizontal de manera lineal, sin embargo, cuenta con numerosos problemas como que la documentación no está totalmente acabada, que el modelo de estructura de datos no encaja con los modelos de datos de este proyecto, su comunidad de usuarios tampoco es muy amplia y tampoco se tienen conocimientos anteriores, por lo que la curva de aprendizaje puede suponer un gran problema. 
+
+\subsection{Elasticsearch}
+Elasticsearch\cite{Elasticsearch} no es tanto una base de datos como tal, es un motor de búsqueda y dado que lo que se van a almacenar son correos electrónicos, y por tanto, texto, puede ser muy buena opción, tal vez no como sistema de almacenamiento principal, pero sí como sistema complementario con el que realizar búsquedas avanzadas dentro de los propios mensajes. 
+
+\subsubsection{Ventajas}
+\begin{itemize}
+    \item Escalado horizontal.
+    \item Distribuido.
+    \item Velocidad de búsqueda (incluso con búsquedas complejas).
+    \item Se pueden aplicar algoritmos sobre las búsquedas.
+    \item Se pueden usar analizadores de texto.
+    \item Preparado para la inteligencia artificial \cite{Elasticsearch_IA}.
+\end{itemize}
+\subsection{Desventajas}
+\begin{itemize}
+    \item Velocidad de indexación.
+    \item Su función principal es buscar texto, no almacenar información.
+\end{itemize}
+\subsubsection{Conclusión}
+Aunque ElasticSearch es una herramienta muy atractiva y puede resultar muy útil en lo referente a búsquedas avanzadas de mensajes, no es viable usarla como sistema principal de almacenamiento ya que no es para lo que está pensada. 
+
+De todas formas, podría ser muy interesante integrar esta herramienta en el servicio ya que ofrece funcionalidades muy interesantes y abre la posibilidad al uso de algoritmos de inteligencia artificial, lo que resulta especialmente interesante en mensajes de estafas, o de extorsión, en los que analizar detalles como enlaces, o dominios no es efectivo. 
+\subsection{Conclusión}
+Después de analizar múltiples motores de bases de datos, los que más se ajustan a las necesidades de este proyecto son o un sistema SQL o Mongo, sin estar realmente claro cuál puede funcionar mejor. 
+
+Sin embargo, teniendo en cuenta que se van a realizar una gran cantidad de consultas y que estas en Mongo son lentas, y que con la gran cantidad de relaciones que hay un sistema relacional ofrece un gran soporte, finalmente se va a optar por diseñar un sistema relacional.
+
+Además, y aunque en un principio el desarrollo puede ser más lento, al tener experiencia previa en este tipo de sistemas, contar con una gran cantidad de documentación y una comunidad amplia en caso de tener algún problema eventual hará que el desarrollo no sea tan lento como lo pudiera ser si se tuvieran conocimientos previos de Mongo. 
