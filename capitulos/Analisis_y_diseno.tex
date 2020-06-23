@@ -575,8 +575,9 @@ Elasticsearch\cite{Elasticsearch} no es tanto una base de datos como tal, es un 
     \item Se pueden aplicar algoritmos sobre las búsquedas.
     \item Se pueden usar analizadores de texto.
     \item Preparado para la inteligencia artificial \cite{Elasticsearch_IA}.
+    \item La documentación está muy bien detallada \cite{Elasticsearch_docu}.
 \end{itemize}
-\subsection{Desventajas}
+\subsubsection{Desventajas}
 \begin{itemize}
     \item Velocidad de indexación.
     \item Su función principal es buscar texto, no almacenar información.
@@ -591,3 +592,347 @@ Después de analizar múltiples motores de bases de datos, los que más se ajust
 Sin embargo, teniendo en cuenta que se van a realizar una gran cantidad de consultas y que estas en Mongo son lentas, y que con la gran cantidad de relaciones que hay un sistema relacional ofrece un gran soporte, finalmente se va a optar por diseñar un sistema relacional.
 
 Además, y aunque en un principio el desarrollo puede ser más lento, al tener experiencia previa en este tipo de sistemas, contar con una gran cantidad de documentación y una comunidad amplia en caso de tener algún problema eventual hará que el desarrollo no sea tan lento como lo pudiera ser si se tuvieran conocimientos previos de Mongo. 
+
+
+\section{Diseño de la base de datos para un sistema relacional}
+A la hora de realizar el diseño de la base de datos, se va a optar por hacer un diagrama entidad relación y además se va a explicar cada una de las tablas, aunque hay tablas intermedias o con una finalidad común que se describirán de manera genérica para facilitar la comprensión del documento. 
+
+Aunque un esquema de este tipo está pensado para un sistema relacional, entender la estructura de este para pasarlo a otro tipo de diagrama y así adaptado a Mongo, la otra opción que se ha aproximado más a la solución no debería ser excesivamente complejo, más allá de adaptar las tablas a las colecciones de Mongo, integrar parte de las tablas intermedias en una única estructura y crear ciertos índices que faciliten las búsquedas.
+
+En cambio, en lo que respecta al contenido, habría que reanalizar todo pues no habría ninguna forma sencilla de pasar el contenido de un sistema a otro. 
+
+\subsection{Tablas}
+Antes de analizar cada una de las tablas, se va a precisar algunos campos comunes entre tablas, así como algunas tablas comunes a algunos elementos. 
+\subsubsection{Elementos comunes a varias tablas.}
+%\renewcommand\labelitemii{$\square$}
+\begin{itemize}
+    \item[] 
+    \begin{itemize}
+        \item \textbf{Id}: Es la clave primaria de la tabla. Siempre es un entero. Se ha elegido esta opción por rendimiento. 
+        \item \textbf{Ocurrences}: Es el número de veces que este elemento ha llegado para analizarse.
+        \item \textbf{Score}: Es el valor de maliciosidad dado al elemento. Un número negativo indicará que es malicioso, un número positivo que es legítimo y cero que no se tiene información sobre dicho elemento. 
+        \item \textbf{Hash}: Es un hash del elemento. Esto evita analizar dos veces un mismo elemento ahorrando tiempo de computación.  
+        \item \textbf{Value}: Es el valor del propio elemento en sí.
+        \item \textbf{Type}: Es una clave externa a un id de la tabla <Nombre Elemento>Type, que identifica el tipo de elemento que es. 
+        
+        En algunos elementos se indican posibles tipos, esto se hace para facilitar la comprensión del documento, pero realmente se almacenan en la tabla <Nombre Elemento>Type.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Tablas genéricas}
+\begin{itemize}
+    \item \textbf{<Nombre Elemento>Delete}: Estas tablas están asociadas a cada uno de los elementos a almacenar susceptibles de ser borrados, como mensajes, emails,…
+    
+    Esto permite cumplir con el derecho al olvido de la ley de protección de datos europea.
+    \begin{itemize}
+        \item \textbf{Id}
+        \item \textbf{Id<Nombre Elemento>}: es una clave externa al elemento en cuestión.
+        \item \textbf{Hash}: Este hash permite identificar a cada elemento insertado, de modo que se le da al usuario la posibilidad de borrarlo si tiene el hash. 
+        Está formado por el valor del elemento, una marca de tiempo y un valor aleatorio.
+        Si dos usuarios introducen el mismo elemento, y sólo uno de ellos quiere borrarlo, el elemento permanecerá hasta que todos los usuarios que lo han introducido quieran borrarlo.
+    \end{itemize}
+        \item <Nombre Elemento>Souces: Identifica todas las fuentes de las que proviene el mensaje, pudiendo darle más o menos valor a la información que contenga en función de la fuente de la que provenga. Ej: emails identificados como maliciosos a mano tendrán más valor que los identificados por la IA (O al revés)
+        \begin{itemize}
+            \item \textbf{Id}
+            \item \textbf{SourceName}: Nombre de la fuente de la que proviene.
+            \item \textbf{Score}
+        \end{itemize}
+    \item <Nombre Elemento>Souces: Identifica todas las fuentes de las que proviene el mensaje, pudiendo darle más o menos valor a la información que contenga en función de la fuente de la que provenga. Ej: emails identificados como maliciosos a mano tendrán más valor que los identificados por la IA (O al revés)
+    \begin{itemize}
+        \item \textbf{Id}
+        \item \textbf{Value}: Nombre de la fuente de la que proviene.
+        \item \textbf{Score} 
+    \end{itemize}
+    \item \textbf{<Nombre Elemento>Type}: Identifica los posibles tipos del elemento, por ejemplo, si el elemento en cuestión es una criptomoneda, identifica el tipo de criptomoneda que es. 
+    \begin{itemize}
+        \item \textbf{Id}
+        \item \textbf{Value}: Es el nombre del tipo.
+    \end{itemize}
+    \item \textbf{<Nombre Elemento>MaliciousChecks}: Identifica cada uno de los posibles patrones maliciosos de dicho elemento, como por ejemplo en el caso de una URL, no coincida el valor del atributo “href” con lo mostrado al usuario.
+    \begin{itemize}
+        \item \textbf{Id}
+        \item \textbf{Value}: es el nombre de patrón.
+        \item \textbf{Score}
+    \end{itemize}
+    \item \textbf{<Nombre Elemento1>\_<Nombre Elemento2>}: Esto son tablas intermedias para dejar la base de datos en Forma normal de Boyce-Codd cuando la multiplicidad es de muchos a muchos.
+    \begin{itemize}
+        \item \textbf{Id}
+        \item \textbf{Id<Nombre Elemento1>}: es una clave externa a un id de la tabla <Nombre Elemento1> 
+        \item \textbf{Id<Nombre Elemento2>}: es una clave externa a un id de la tabla <Nombre Elemento2> 
+        \item \textbf{Date} \emph{(Opcional)}: Permite registrar el mismo elemento, mediante la misma fuente, más de una vez. Esto puede permitir detectar elementos muy analizados en un instante de tiempo, típico por ejemplo cuando se realiza una nueva campaña de phishing, dicho elemento tendrá un pico de análisis cuando se realice la campaña.
+    \end{itemize}
+\end{itemize}
+
+\subsubsection{Tablas específicas de cada elemento}
+Son cada uno de los elementos que se van a guardar en la base de datos.
+
+Se pueden distinguir tres tipos de datos: 
+
+\begin{enumerate}
+    \item Los mensajes en sí. Es la tabla principal del proyecto y con la que están relacionada la mayoría de las tablas principales.
+    \item Los elementos que se detectan de cada mensaje. Por ejemplo: direcciones de emails, dominios, links, …
+    \item Los distintos tipos de mensajes que hay, por ejemplo, mensajes de correo electrónico (Los elementos principales), mensajes de Whatsapp o Telegram, SMS, mensajes de redes sociales como Instagram, Facebook o Twitter, …
+    Estas tablas siempre tendrán una clave externa a la tabla Message, lo que permite identificar un mismo texto mediante distintos tipos de mensaje. Por ejemplo una campaña de phishing 
+    \item Se podrían distinguir un cuanto tipo de elementos que son todas las tablas auxiliares específicas de elementos concretos y no detalladas anteriormente. Este tipo de tablas son, por ejemplo, la tabla de países de los números de teléfono, la de las cabeceras de los emails, … Son tablas que añaden detalles o facilitan la implementación. 
+    
+\end{enumerate}
+
+\paragraph{Mensajes}
+\begin{itemize}
+    \item \textbf{Message}: es la tabla principal del proyecto. En esta tabla se guardarán los mensajes o la ubicación de estos y está formada por los siguientes campos: 
+\begin{itemize}
+    \item \textbf{Id}
+    \item \textbf{Hash}
+    \item \textbf{Value}
+    \item \textbf{Occurrences}
+    \item \textbf{Score}
+    \item \textbf{Kind}: [eml, html, text]
+    \item \textbf{AnalyzedBy}: en caso de tener varios lenguajes o varias formas de análisis, permite saber con qué lenguaje se ha hecho
+    \item \textbf{Status}: indica si está analizado o pendiente de analizar.
+    \item \textbf{AnalyzedAt}: indica la fecha del último análisis. (Esto permite que si en el futuro se añade nuevos análisis, sólo se analicen los archivos anteriores a la fecha de implementación)
+\end{itemize}
+\end{itemize}
+\paragraph{Elementos a detectar en los mensajes}
+\begin{itemize}
+    \item \textbf{IpAddresss}: Son direcciones ip que pueden ser maliciosas o no, en función del score.: 
+\begin{itemize}
+    \item \textbf{Id}
+    \item \textbf{Hash}
+    \item \textbf{Value}
+    \item \textbf{Occurrences}
+    \item \textbf{Score}
+    \item \textbf{ipV4}: indica si la ip es v4 o v6.
+\end{itemize}
+\item \textbf{Domain}: en esta tabla se almacenan tanto dominios como subdominios. Los subdominios tendrán una clave externa al dominio. 
+
+Puede haber dominios en los que todos sus subdominios sean maliciosos o en los que no tengan relación. (Véase el caso de los subdominios de wordpress.com o blogspot.com)
+
+Esta tabla está relacionada con la tabla ipAddress, anteriormente detallada permitiendo tanto a un dominio tener varias direcciones IP y como tener varios dominios apuntando a la misma IP, y estas ser tanto IPv4 como IPv6
+
+\begin{itemize}
+    \item \textbf{Id}
+    \item \textbf{Hash}
+    \item \textbf{Value}
+    \item \textbf{Occurrences}
+    \item \textbf{Score}
+    \item \textbf{DomainId}: permite identificar el domino en caso de ser un subdominio.
+\end{itemize}
+\item \textbf{URL}: Son enlaces, es decir una ruta de un dominio y van a estar siempre asociadas a él. Este es un elemento clave a analizar pues la inmensa mayoría de los ataques de phishing se producen al ingresar en una url falsa.
+\begin{itemize}
+    \item \textbf{Id}
+    \item \textbf{Hash}
+    \item \textbf{Value}
+    \item \textbf{Occurrences}
+    \item \textbf{Score}
+    \item \textbf{Domain}: Es un clave externa a la tabla domains como ya se ha detallado con anterioridad.
+\end{itemize}
+\item \textbf{EmailAddresses}: En esta tabla se almacenarán todas las direcciones de correo electrónico que se detecten. 
+
+Esta tabla también tiene especial relevancia porque la mayoría de los ataques se realizan por correo electrónico. Esta tabla se relaciona con la tabla domain, anteriormente detallada. Además, también se tiene en cuenta el enmascaramiento de direcciones falsas mediante el tag “<a>” y el atributo “href” de html.
+\begin{itemize}
+    \item \textbf{Id}
+    \item \textbf{Hash}
+    \item \textbf{Value}
+    \item \textbf{Occurrences}
+    \item \textbf{Score}
+    \item \textbf{Domain}: Es un clave externa a la tabla domains como ya se ha detallado con anterioridad.
+\end{itemize}
+
+\end{itemize}
+*La implementación permite añadir nuevos elementos a detectar, tales como cuentas bancarias, o principales palabras.
+
+\section{Elección del lenguaje de programación}
+El lenguaje de programación es el punto de unión entre la base de datos y la interacción del usuario. Se distinguen dos partes, por un lado, la parte de análisis del mensaje, extracción de datos e inserción de estos en la base de datos y, por otro lado, la visualización.
+
+Lo ideal sería utilizar el mismo mensaje para ambos propósitos ya que daría homogeneidad al proyecto, aunque esto supone que la búsqueda de un lenguaje que satisfaga todos los requisitos sea más compleja.
+
+Independiente a esto, se va a dar prioridad a lenguajes soportados por el servicio de Azure Functions ya que permite escalar el servicio de manera transparente y el costo va ligado a la utilización del servicio evitando tener costes iniciales o fijos.
+
+De esta manera, los lenguajes candidatos serían C\#, F\#, Node.js, Python, Java o PHP \footnote{PHP ya no está disponible, pero al comienzo de este trabajo sí lo estaba.}.
+
+Dentro de los lenguajes anteriores, se van a valorar: 
+\begin{description}
+    \item [Java:] por el conocimiento previo, por su portabilidad, por tu soporte con multitud de tipos de bases de datos y por la cantidad de librerías existentes para este lenguaje.
+    \item [Python:] por ser uno de los lenguajes de programación más usados en Big Data y en inteligencia artificial, por la sencillez del lenguaje, y por tener soporte para web.
+    \item [Node.js:] por su uso en la web, por tu portabilidad y por su soporte completo de expresiones regulares.
+    \item [PHP:] por ser run estándar en la web, por su soporte completo a expresiones regulares, por su fácil integración con múltiples sistemas de bases de datos. 
+\end{description}
+
+Se van a valorar los siguientes aspectos:
+\begin{enumerate}
+    \item Librerías para bases de base de datos SQL\footnote{Adicionalmente y por si finalmente se migra a Mongo, se comprobará si existe o no algún tipo de soporte para este tipo de base de datos.}
+    \item Soporte y rendimiento con expresiones regulares.
+    \item Librerías para analizar archivos EML.
+    \item Librerías para archivos HTML. 
+    \item Funciones hash, en concreto SHA1.
+    \item Soportado o no por Azure.
+    \item Facilidad para crear una web mediante dicho lenguaje.
+    \item Documentación.
+    \item Comunidad.
+\end{enumerate}
+
+\subsection{Java}
+Java es un lenguaje multidispositivo, con una gran comunidad, una documentación muy completa y tiene una gran cantidad de librerías para todo tipo de bases de datos. 
+\subsubsection{Soporte para bases de datos}
+Java cuenta con una librería nativa para conectarse a bases de datos relacionales conocido como Java Database Connectivity [JDBC] \cite{JDBC_oracle} que cuenta con controladores para multitud de bases de datos relacionales como Postgresql \cite{JDBC_postgresql}, MySQL \cite{JDBC_MySQL} o MariaDB \cite{JDBC_MariaDB}
+
+También cabe mencionar que hay ORM’s que facilitan la tarea de acceder a la base de datos, el más famoso puede ser Hibernate \cite{Hibernate}, además, este mismo ORM ofrece soporte para Mongo. 
+
+\subsubsection{Soporte para expresiones regulares}
+Java tiene la clase Pattern \cite{java_Pattern_class} a partir de su versión 7 la cual permite trabajar de manera nativa con expresiones regulares. 
+
+\subsubsection{Librerías para analizar archivos EML}
+La mejor forma de leer archivos EML en Java es haciendo uso de la librería JavaMail \cite{JavaMail}. Esta es una librería opcional en Java SE y está incluida en Java EE por lo que tiene soporte por parte de Oracle \cite{java_JavaMail}.
+
+\subsubsection{Librerías para archivos HTML}
+Para leer archivos con formato HTML se puede usar la librería Jsoup \cite{jsoup}.
+
+Otras librerías que también pueden ser interesantes para leer archivos de la familia XML puede ser Jerry \cite{jerry} con Lagarto \cite{jerry}.
+
+\subsubsection{Funciones hash}
+Los algoritmos de hash en Java se encuentran en la clase MessageDigest \cite{java_MessageDigest} y cuentan con al menos las funciones MD5, SHA-1 y SHA-256.
+
+\subsubsection{Facilidad para crear una web mediante dicho lenguaje}
+lenguajes debido a la máquina virtual donde se ejecuta código, por eso se utilizar un servidor Tomcat \cite{tomcat}.
+
+Encontrar hostings que soporten este tipo de servidores no es tan fácil como servidores que ejecuten código PHP.
+
+Dentro de las librerías más famosas para crear una web con java están Spring \cite{Spring} y Structs \cite{Struts}. 
+
+\subsubsection{Documentación}
+Java posee una documentación muy detallada, además no es difícil encontrar una cantidad de ayuda y recursos en la web. \cite{java_docu}
+
+\subsubsection{Conclusión}
+Java es un lenguaje desarrollado por Oracle con una gran trayectoria, lo que hace que tenga una documentación muy buena, multitud de ejemplos en la web y una gran cantidad de librerías.
+
+Además, es un lenguaje compilado lo que debería hacer que fuese rápido si no se ejecutase en una máquina virtual \cite{java_vm}, lo que hace que consuma muchos recursos, especialmente RAM. 
+
+\subsection{Python}
+Python es un lenguaje de muy alto nivel, que compila a código C.
+
+Su rendimiento no es tan alto como otros lenguajes de bajo nivel, pero es sencillo de programar. 
+
+\subsubsection{Soporte para bases de datos}
+
+Actualmente Python posee varios conectores para distintos gestores de bases de datos relacionales como los ya mencionados, algunos de estos son Mysql \cite{python_mysql}, MariaDB que utiliza el mismo conector que MySQL \cite{python_mariadb}, o Postgresql \cite{python_Postgresql}.
+
+En caso de migrar posteriormente a MongoDB, también posee el controlador Pymongo \cite{python_MongoDB}.
+
+\subsubsection{Soporte para expresiones regulares}
+Para el uso de expresiones regulares Python 3 cuenta con la librería re \cite{python_regex}.
+
+\subsubsection{Librerías para analizar archivos EML}
+Para analizar archivos con formato EML, se puede usar el paquete eml-parser \cite{python_eml_parser} o el paquete emaildata \cite{python_emaildata}.
+
+\subsubsection{Librerías para archivos HTML}
+Python 3 cuenta con un módulo llamado HTMLParser \cite{python_HTMLParser} destinado a leer archivos con formato HTML. 
+
+\subsubsection{Funciones hash}
+Las funciones hash están implementadas en el módulo hashlib \cite{python_hashlib} y tiene soporte para sha1, sha224, sha256, sha384, sha512, o md5 entre otras. 
+
+\subsubsection{Facilidad para crear una web mediante dicho lenguaje}
+Actualmente existen varios frameworks que permiten crear una web con Python, los más famosos son Django \cite{python_Django} y Flask \cite{python_Flask}.
+
+\subsubsection{Documentación}
+La documentación de Python se puede encontrar en su página oficial \cite{python_docu} y aunque se echa en falta algo más de claridad, no es difícil encontrar buenos ejemplos en internet. 
+
+\subsubsection{Conclusión}
+Python es un lenguaje que permite un desarrollo rápido, con una gran comunidad de usuarios y con gran cantidad de librerías. 
+Sin embargo, su sintaxis es bastante distinta a la de los demás lenguajes, tampoco tiene un gran rendimiento y su documentación no es muy completa.
+
+\subsection{Node}
+\subsubsection{Soporte para bases de datos}
+Node posee varios paquetes para conectarse a bases de datos SQL como el paquete mysql \cite{node_mysql}, o el paquete mysql2 \cite{node_mysql2}.
+
+Por otro lado, en caso de querer usar una base de datos Mongo, tiene el paquete mongodb \cite{node_mongo_driver}, además cuenta con el ORM mongoosejs \cite{node_Mongoosejs}.
+
+\subsubsection{Soporte para expresiones regulares}
+Node tiene soporte nativo para expresiones regulares mediante la clase RegExp \cite{node_regex}.
+
+\subsubsection{Librerías para analizar archivos EML}
+Para leer un archivo EML con node se puede usar el paquete mailparser \cite{node_mailparser} o el paquete eml-format \cite{node_eml_format}.
+
+\subsubsection{Librerías para archivos HTML}
+Los archivos de la familia XML, entre ellos los  que tienen formato HTML, puede ser analizados con el paquete htmlparser2 \cite{node_htmlparser2}.
+
+\subsubsection{Funciones hash}
+Para utilizar funciones hash Node cuenta con el módulo Crypto \cite{node_Crypto}. La lista de algoritmos disponibles depende del módulo OpenSSL que tenga instalado el sistema operativo \cite{node_Crypto_algorithm_options} y se puede obtener de la siguiente forma: 
+\begin{verbatim}
+let crypto = require('crypto');
+let listOfSupportedHashes = crypto.getHashes(); 
+\end{verbatim}
+
+\subsubsection{Facilidad para crear una web mediante dicho lenguaje}
+Uno de los principales usos de Node es para la creación de webs, por lo que ofrece un amplio soporte para ello. Uno de los principales frameworks para este propósito es Expressjs \cite{node_expressjs}.
+
+\subsubsection{Documentación}
+La documentación de Node es muy completa y con varios ejemplos de uno dentro de la misma web \cite{node_docu}. 
+
+\subsubsection{Conclusión}
+Pese a ser un lenguaje interpretado tiene un rendimiento muy aceptable gracias al buen trabajo de Google con su motor de JavaScript V8 \cite{node_engine}, además gracias a su programación mediante callbacks y promesas hacen que sea especialmente interesante ya que se pueden realizar tareas en paralelo de manera sencilla.
+
+Su documentación es excelente, aunque no tiene tantas librerías como los otros lenguajes.
+
+Por otro lado, permite tener un único lenguaje de programación para todo el proyecto, tanto para la parte del análisis como para la parte de la web. 
+
+
+\subsection{PHP}
+
+\subsubsection{Soporte para bases de datos SQL}
+PHP ofrece soporte nativo para una gran cantidad de bases de datos relacionales mediante la clase PDO \cite{php_pdo}, como MySQL o PostgreSQL \cite{php_pdo_drivers}.
+
+\subsubsection{Soporte para expresiones regulares}
+Las expresiones regulares pueden usarse de manera nativa en PHP como demuestra su documentación \cite{php_pcre}.
+
+\subsubsection{Librerías para analizar archivos EML}
+Para poder leer los archivos con formato EML, se puede usar de manera nativa la familia de funciones mailparse \cite{php_Mailparse}. Para un soporte más completo se puede usar la librería php-mime-mail-parser \cite{php_php_mime_mail_parser}.
+
+\subsubsection{Librerías para archivos HTML}
+PHP tiene de forma nativa un conjunto de clases para tartar con archivos de la familia XML como sería el caso del formato HTML \cite{php_dom}.
+
+\subsubsection{Funciones hash}
+Este lenguaje soporta de manera nativa una gran cantidad de funciones hash de manera nativa \cite{php_hash}. 
+Facilidad para crear una web mediante dicho lenguaje
+PHP es uno de los lenguajes más utilizados para web, de hecho, es prácticamente el uso principal de este lenguaje, por lo que se ofrece de manera nativa una gran cantidad de facilidades para crear webs. 
+Aunque también posee varios frameworks como Synfony \cite{php_Symfony} o Laravel \cite{php_laravel}.
+
+\subsubsection{Documentación}
+La documentación es muy completa, teniendo soporte incluso en español \cite{php_docu}. Además, gracias a su larga trayectoria se pueden encontrar de manera sencilla multitud de ejemplos prácticos para una gran cantidad de problemas. 
+
+\subsubsection{Conclusión}
+PHP es un lenguaje que está especialmente diseñado para web, tiene una gran trayectoria y aunque su rendimiento era bastante pobre, ha mejorado en gran medida en su versión 7.\cite{php_Benchmark}
+
+De todos los lenguajes es el único que permitiría hacer el proyecto de manera prácticamente nativa, especialmente interesante es el uso de la clase PDO, que te permite cambiar de un gestor de base de datos a otro de manera practica mente transparente. 
+
+Su documentación es aceptable, con ejemplos y la única disponible en español, también tiene una gran comunidad, lo que facilita encontrar ejemplos a problemas conocidos. 
+
+\subsection{Rendimiento en expresiones regulares}
+Se ha encontrado un benchmark \cite{regex_benchmark} totalmente independiente en el que se analiza el rendimiento con expresiones, además, con expresiones regulares similares a las usadas en este proyecto, de diferentes lenguajes de programación.  De todos los analizados, se va a extraer la información de los que conciernen a este proyecto. 
+
+\begin{table}[htbp]
+    \begin{center}
+        \begin{tabular}{| m{2.8cm} || m{2cm} | m{2cm} | m{2cm} | m{2cm} |}
+            \hline
+            Language & Email (ms) & URI (ms) & IP (ms) & Total (ms) \\ 
+            \hline \hline 
+            PHP & 29.20 & 28.05 & 9.12 & 66.37\\
+            Node.js & 81.87 & 67.16 & 2.04 & 151.07\\
+            Python PyPy3 & 354.38 & 314.82 & 367.19 & 1036.39\\
+            Java & 310.30 & 326.81 & 732.19 & 1369.30 \\
+            \hline
+        \end{tabular}
+    \caption{Comparativa del rendimiento en la evaluación de expresiones }
+    \label{table:regex_benchmark}
+    \end{center}
+\end{table}
+
+Como puede verse en la tabla \ref{table:regex_benchmark}, el más rápido es PHP, a una distancia prudente está Node, muy por detrás quedan Python y Java. 
+\subsection{Conclusión}
+De todos los lenguajes analizados, los más interesantes son PHP y Node.
+
+PHP destaca por tener de manera nativa prácticamente todo lo necesario para el desarrollo, por la facilidad para cambiar a otro tipo de base de datos relacional de manera prácticamente transparente y por su alto rendimiento.
+
+En el otro lado, Node también tiene un buen rendimiento, existen todas librerías necesarias para este proyecto, su documentación es muy buena y permitiría tener un único lenguaje de programación para todo el desarrollo. 
+
+\subsubsection{Resultado final}
+Finalmente y comparando las ventajas e inconvenientes que nos ofrencen ambos lenguajes, se ha optado por elegir PHP ya que, por un lado prácticamente no es necesario instalar dependencias externas y por otro migrar de un gestor de base de datos de otro, siempre que sean relacionales como es el caso, es bastante sencillo.
