@@ -177,7 +177,7 @@ Una dirección IP es un conjunto de números y/o letras que identifican de maner
 
 Existen dos versiones, la versión 4 y la versión 6, cada una tiene un formato distinto. \cite{ipv4_v6}
 
-\subsubsection{IP versión 4 (IPv4)}
+\subsubsection{IP versión 4 (IPv4)}\label{subsec:ipv4}
 Cuando se habla de IPv4 es importante mencionar que su formato no se ha especificado como tal en ningún RFC, quedando definido por el uso y por cómo fue descrito en otros RFCs. Con esto en mente se va a usar el RFC790 \cite{rfc790}, donde se realiza la asignación de clases de redes, a distintos grupos de direcciones IP, para definir su formato. 
 
 Como se puede observar en dicho RFC, se podría decir que por convención una dirección IP en versión 4 está definida por un conjunto de cuatro números, separados entre sí por un punto y cuyo valor del 0 al 255. Pueden ser escritos tanto con ceros a la izquierda o sin ellos, o lo que es lo mismo, tanto el 3 como el 03, como el 003 son válidos y tienen exactamente el mismo valor. Esto hace que una misma dirección pueda ser escrita de múltiples formas, por ejemplo 192.168.0.1 podría ser escrita como 192.168.000.001 ò 192.168.00.01 ò 192.168.000.01, etc. 
@@ -213,7 +213,7 @@ Por ejemplo:
       
 Precisamente esta característica es la que hace sea complicado analizar una dirección IP en su versión 6, ya que múltiples opciones son posibles y todas correctas.
 
-\paragraph{Direcciones IPv4 embebidas}
+\paragraph{Direcciones IPv4 embebidas}\label{subsec:ipv4}
 Una dirección IPv6 puede tener embebida una dirección IPv4 al final de esta, que será escrita con el mismo formato de una dirección IPv4. 
 
 Por ejemplo 
@@ -228,7 +228,7 @@ Además, si se tiene en cuenta la propiedad anterior, podrían contraerse los ce
 
     ::FFFF:129.144.52.38
 
-\subsection{Dominios}
+\subsection{Dominios}\label{subsec:Dominios}
 Un dominio es una cadena de caracteres que está asociada a una o varias direcciones IP. Está regulados por un organismo internacional llamado ICANN del inglés (Internet Corporation for Assigned Names and Numbers; ICANN) \cite{icann} y su especificación viene recogida en el RFC 1035 \cite{rfc1035}
 
 \subsubsection{Formato}
@@ -253,12 +253,12 @@ Además, es una buena forma de detectar falsos positivos cuando se están buscan
 \subsubsection{Tamaño}
 En la sección “2.3.4. Size limits” del RFC 1035, se indica que el tamaño máximo para el dominio son 255 completo caracteres y el de casa sección de 63 caracteres, aunque en la actualidad no suelen ser tan largos. 
 
-\subsubsection{Caracteres permitidos}
+\subsubsection{Caracteres permitidos} \label{subsec:caracteres_permitiros_dominios}
 Así mismo en la sección “2.3.3. Character Case” se indica que la codificación de un dominio debe ser ASCII del inglés (American Standard Code for Information Interchange) e insensible a mayúsculas y minúsculas, aunque no obliga a ello. En el RFC 3490 \cite{rfc3490}, se recoge la posibilidad de usar caracteres Unicode aunque estos sean representados internamente como caracteres ASCII, en la práctica, los caracteres Unicode no son muy usados.
 
 Además, y según se especifica en el RFC 952 \cite{rfc952} y en el RFC 1123 \cite{rfc1123}, los únicos caracteres válidos dentro de un dominio son los caracteres alfanuméricos (A-Z) y (0-9), el guion medio (-) y el punto (.), aunque algunos servidores también permiten el guion bajo (\_).
 
-\subsection{Enlaces (URLs)}
+\subsection{Enlaces (URLs)} \label{subsec:Enlaces}
 Los enlaces o URLs (del inglés Uniform Resource Locator) vienen definidas por el RFC 1738 \cite{rfc1738}, de especial interés la sección “3. Specific Schemes”. Una URL es a su vez un tipo de URI (del inglés Uniform Resource Identifier) definido en el RFC 3986 \cite{rfc3986}, de este último el apartado más interesante para el proyecto es la sección “3.3.  Path” en el cual se especifica el formato que debe tener y también en el “Apéndice A: Collected ABNF for URI”.
 
 También es interesante el RFC 3696 en la sección “4.1.  URI syntax definitions and issues” \cite{rfc3696_section4_1}, ya que se centra en las URLs cuyo esquema sea Hypertext Transfer Protocol (HTTP) o HTTP seguro (HTTPS), y por tanto el más interesante para el proyecto .

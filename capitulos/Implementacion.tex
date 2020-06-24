@@ -1,0 +1,240 @@
+\chapter{Implementación}
+\section{Expresiones regulares}
+Se ha elegido esta forma de extraer los datos por ser una forma rápida y eficiente de extraer datos que comparten un patrón más o menos definido.
+\subsection{Direcciones IP}
+\subsubsection{IPv4}
+Como se ha comentado en el apartado \ref{subsec:ipv4} una dirección IP en su versión 4 está definida por 4 números. Su valor va del 0 al 255 y están separados por un punto. 
+
+Lo primero que se va a crear es una expresión regular que permita encontrar números del 0 al 255, tanto añadiendo ceros a la izquierda, como sin ellos. 
+
+Esto se puede hacer de la siguiente forma: 
+\begin{verbatim}
+    25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?
+\end{verbatim}
+
+Tal y como se puede ver, hay tres posibles alternativas: 
+\begin{enumerate}
+    \item \verb|25[0-5]|: Un número que empiece por 25 y termine con un número entre el 0 y el 5 ambos incluidos. Números incluidos den este rango [250-255].
+    \item \verb|2[0-4][0-9]|: un número que empiece por dos, que esté sucedido de un número del 0 al 4 (El 5 se ha contemplado en la primera opción) y que finalmente esté sucedido de un tercer número del 0 al 9. Números incluidos den este rango [200-249].
+    \item \verb|[01]?[0-9][0-9]?|: En este rango se contemplan todos los número del 0 al 199, ya sea empezando con ceros o sin ellos.  
+\end{enumerate}
+Esta expresión regular sólo detecta un número del 0 al 255, para detectar una dirección IPv4 completa sería necesario una expresión regular de la siguiente forma: 
+
+\begin{lstlisting}[breaklines, caption={Expresión regular IPv4}, label={Regex:ipv4}, captionpos=b]
+    (?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)
+\end{lstlisting}
+
+La expresión regular anterior se introduce en un grupo, al que se le agrega “\textbackslash.“ para detectar los puntos que separan los números. Con “\{3\}” se indica que va a haber exactamente 3 grupos de este tipo y finalmente se añade de nuevo la primera expresión regular para detectar el último número del 4 grupo, esta vez sin punto. 
+
+\subsubsection{IPv6}
+La expresión regular para detectar una dirección IP en versión 6 es mucho más compleja debido a la gran cantidad de posibles modificaciones que se pueden hacer.
+Ya que una dirección IPv6 está formada por 8 números en hexadecimal cuyo valor puede ir del 0 al FFFF y se pueden escribir tanto en mayúsculas como en minúsculas. Estos números se pueden detectar mediante la siguiente expresión regular.
+
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar un número exadecimal de 4 dígitos}, label={Regex:numero_hex}, captionpos=b]
+                    [0-9a-fA-F]{1,4}
+\end{lstlisting}
+
+También es necesario tener en cuenta que los dos últimos números pueden ser sustituidos por una dirección IP en versión 4, para lo que se utilizará la expresión regular del apartado anterior (Código \ref{Regex:ipv4}), aunque se va a sustituir por “\verb!${ipv4}!” con el objetivo de facilitar la comprensión ya que, de otra manera, quedan expresiones tan largas que es complicado leerlas. 
+
+La siguiente expresión regular puede capturar o bien dos números en hexadecimales separados por “:” o bien una dirección IPv4 y de aquí en adelante será sustituida por “\verb!${2groups_or_ipv4}!”:
+
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar los dos últimos números o una dirección IP en versión 4}, label={Regex:2numeros_IPv4}, captionpos=b]
+   (?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|${ipv4})
+\end{lstlisting}
+
+Por último, recordar que los números cuyo valor valga 0, se pueden contraer mediante “::”.
+
+A continuación, se van a analizar nueve casos, puestos en orden de mayor a menor cantidad de posibles números contraídos, para así jugar con las posibles posiciones del valor “::”.
+
+Esto se hace de esta manera para evitar que se capturen subpartes de la dirección y no la dirección completa.
+
+\paragraph{Dirección completa}
+En este caso se va a contemplar que la dirección esté completa y por tanto no haya ninguna contracción. 
+En este caso la expresión es la siguiente: 
+
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar dirección IPv6 completa}, label={Regex:ipv5_completa}, captionpos=b]
+  (?:(?:(?:[0-9a-fA-F]{1,4}:){6})${2groups_or_ipv4})
+ \end{lstlisting}
+
+En ella se distinguen dos partes, la primera está compuesta simplemente por 6 números hexadecimales de 4 dígitos como ya se ha visto (Código \ref{Regex:numero_hex}), separados por “:” \verb!(?:(?:[0-9a-fA-F]{1,4}:){6})! y la segunda parte de la expresión también ha sido analizada (Código \ref{Regex:2numeros_IPv4}) y, o bien captura dos números hexadecimales separados por “:” o bien una dirección IPv4.
+
+\paragraph{Contracción del primer número}
+
+El siguiente caso detecta una dirección cuyo primer número está contraído. 
+
+La expresión es muy similar a la anterior:
+
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar dirección IPv6 con el primer número contraido}, label={Regex:ipv6_1}, captionpos=b]
+   (?:(?:::(?:[0-9a-fA-F]{1,4}:){5})${2groups_or_ipv4})
+\end{lstlisting}
+
+Simplemente se añaden los “::” de la contracción y se reduce de 6 a 5 los posibles siguientes números hexadecimales.
+
+\paragraph{Contracción del segundo número (Y tal vez del primero)}
+En la contracción del segundo número hay que tener en cuenta que el primer número también puede estar contraido, por ejemplo la dirección:
+
+\begin{verbatim}
+    0000:0000:aaaa:bbbb:cccc:dddd:eeee:ffff
+\end{verbatim}
+Podría contraerse como:
+\begin{verbatim}
+    0000::aaaa:bbbb:cccc:dddd:eeee:ffff
+\end{verbatim}
+O como:
+\begin{verbatim}
+    ::aaaa:bbbb:cccc:dddd:eeee:ffff
+\end{verbatim}
+Y todas son correctas direcciones correctas.
+
+Por este motivo, se debe tener en cuenta que ese primer número puede, o no, estar.
+
+La expresión regular queda como sigue: 
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar dirección IPv6 con el segundo número contraido (Y posibles anteriores)}, label={Regex:ipv6_2}, captionpos=b]
+(?:(?:(?:[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){4})${2groups_or_ipv4})
+ \end{lstlisting}
+
+ En primer lugar puede verse como se reduce de nuevo en uno los números tras la contracción, pasando de cinco a cuatro.
+
+ En segundo lugar, se contempla que el primer número puede, o no, estar \verb|(?:[0-9a-fA-F]{1,4})?|, finalmente se contempla que los dos últimos números sean una dirección IPv4 (Código \ref{Regex:2numeros_IPv4}).
+
+\paragraph{Contracción del tercer número (Y tal vez primer y/o segundo número)}
+En este caso el número de posibilidades aumenta considerablemente, en cambio la lógica para detectar el patrón es muy similar. 
+
+La expresión regular es la siguiente: 
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar dirección IPv6 con el tercer número contraido (Y posibles anteriores)}, label={Regex:ipv6_3}, captionpos=b]
+    (?:(?:(?:[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){4})${2groups_or_ipv4})
+\end{lstlisting}
+
+En esta expresión regular hay que tener en cuenta que la contracción representa al tercer número.
+
+También se sabe que los números anteriores pueden o no estar contraídos, tal y como sucedía en el caso anterior y que los siguientes van a estar. 
+
+Por tanto la expresión regular tras “::” queda exactamente igual salvo por que se tienen que reducir de cuatro a tres los números posteriores \verb!::(?:[0-9a-fA-F]{1,4}:){3}!.
+
+Delante de esto se tienen que poder detectar tanto el primer, como el segundo número contraídos y sin contraer. Y esto se hace de la siguiente forma:
+
+\begin{verbatim}
+    (?:(?:[0-9a-fA-F]{1,4}:){0,1}[0-9a-fA-F]{1,4})?
+\end{verbatim}
+
+En primer lugar, se tiene en cuenta que pueden estar los dos números sin contraerse.
+
+En caso estar contraído únicamente el segundo número, se detectaría el primer número gracias patrón \verb![0-9a-fA-F]{1,4}!.
+
+Finalmente, cabe la posibilidad de que no haya nada delante, de ahí que los patrones anteriores estén centro de un grupo de la expresión regular seguido del signo “?”.
+
+\paragraph{Contracción del cuarto número (Y posibles anteriores)}
+
+La lógica seguida en este caso y posteriores es muy similar, simplemente se aumenta en uno los posibles números delante de la contracción y se disminuyen los que van detrás, quedando como sigue:
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar dirección IPv6 con el cuarto número contraido (Y posibles anteriores)}, label={Regex:ipv6_4}, captionpos=b]
+(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,2}[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){2})${2groups_or_ipv4})
+\end{lstlisting}
+
+\paragraph{Contracción del quinto número (Y posibles anteriores)}
+En la contracción del quinto número se evitan las llaves de los números que van a ir tras la contracción, porque al salir sólo uno, no es necesario indicarlo.
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar dirección IPv6 con el quinto número contraido (Y posibles anteriores)}, label={Regex:ipv6_5}, captionpos=b]
+(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,3}[0-9a-fA-F]{1,4})?::[0-9a-fA-F]{1,4}:)${2groups_or_ipv4})
+\end{lstlisting}
+
+\paragraph{Contracción del sexto número: (Y posibles anteriores)}
+Tras la contracción, sólo puede haber dos números en hexadecimal o una dirección IPv4.
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar dirección IPv6 con el sexto número contraido (Y posibles anteriores)}, label={Regex:ipv6_6}, captionpos=b]
+(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,4}[0-9a-fA-F]{1,4})?::)${2groups_or_ipv4})
+\end{lstlisting}
+
+\paragraph{Contracción del séptimo número: (Y posibles anteriores)}
+Al estar la contracción en el séptimo número, tras esta sólo puede ir el octavo número.
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar dirección IPv6 con el sétimo número contraido (Y posibles anteriores)}, label={Regex:ipv6_7}, captionpos=b]
+(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,5}[0-9a-fA-F]{1,4})?::)[0-9a-fA-F]{1,4})
+\end{lstlisting}
+
+\paragraph{Contracción del octavo número: (Y posibles anteriores)}
+Al contraer el octavo número, ya no es posible que haya más números.
+Lo que sí es posible, es que todos los anteriores estén contraídos, en ese caso se tiene en cuenta la dirección “::”, la cual por supuesto, es válida.
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar dirección IPv6 con el octavo número contraido (Y posibles anteriores)}, label={Regex:ipv6_8}, captionpos=b]
+(?:(?:(?:[0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{1,4})?::)
+\end{lstlisting}
+
+\paragraph{Expresión final}
+Al juntar todos los casos las expresiones regulares quedan de la siguiente manera: 
+
+\begin{lstlisting}[breaklines, caption={Expresiones regulares IPv6 con sustituciones}, captionpos=b]
+(?:(?:(?:[0-9a-fA-F]{1,4}:){6})${2groups_or_ipv4})|
+
+(?:(?:::(?:[0-9a-fA-F]{1,4}:){5})${2groups_or_ipv4})|
+
+(?:(?:(?:[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){4})${2groups_or_ipv4})|
+
+(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,1}[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){3})${2groups_or_ipv4})|
+
+(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,2}[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){2})${2groups_or_ipv4})|
+
+(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,3}[0-9a-fA-F]{1,4})?::[0-9a-fA-F]{1,4}:)${2groups_or_ipv4})|
+
+(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,4}[0-9a-fA-F]{1,4})?::)${2groups_or_ipv4})|
+
+(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,5}[0-9a-fA-F]{1,4})?::)[0-9a-fA-F]{1,4})|
+
+(?:(?:(?:[0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{1,4})?::)
+\end{lstlisting}
+
+Y al deshacer todas sustituciones, queda como sigue:
+\begin{lstlisting}[breaklines, caption={Expresiones regulares IPv6 sin sustituciones}, captionpos=b]
+(?:(?:(?:[0-9a-fA-F]{1,4}:){6})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|
+
+(?:(?:::(?:[0-9a-fA-F]{1,4}:){5})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|
+
+(?:(?:(?:[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){4})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|
+
+(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,1}[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){3})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|
+
+(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,2}[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){2})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|
+
+(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,3}[0-9a-fA-F]{1,4})?::[0-9a-fA-F]{1,4}:)(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|
+
+(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,4}[0-9a-fA-F]{1,4})?::)(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|
+
+(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,5}[0-9a-fA-F]{1,4})?::)[0-9a-fA-F]{1,4})|
+
+(?:(?:(?:[0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{1,4})?::)
+\end{lstlisting}
+
+Quedando finalmente: 
+\begin{lstlisting}[breaklines, caption={Expresión regular final para capturar direcciones IPv6}, label={Regex:ipv6}, captionpos=b]
+(?:(?:(?:[0-9a-fA-F]{1,4}:){6})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|(?:(?:::(?:[0-9a-fA-F]{1,4}:){5})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|(?:(?:(?:[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){4})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,1}[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){3})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,2}[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){2})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,3}[0-9a-fA-F]{1,4})?::[0-9a-fA-F]{1,4}:)(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,4}[0-9a-fA-F]{1,4})?::)(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,5}[0-9a-fA-F]{1,4})?::)[0-9a-fA-F]{1,4})|(?:(?:(?:[0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{1,4})?::)
+\end{lstlisting}
+
+\subsection{Dominios}\label{subsec:regexDominios}
+Como se ha comentado en el apartado \ref{subsec:Dominios}, un dominio está formado por dos o más partes separadas por “.”, siendo la última parte leyendo el dominio de izquierda a derecha el TDL. Obtener esta parte por separado es muy interesante para determinar si un dominio es válido o no. 
+
+Además, sólo hay ciertos caracteres permitidos, como se vio en el punto \ref{subsec:caracteres_permitiros_dominios}, y un número máximo de caracteres.
+
+Por tanto la expresión regular diseñada para detectar los dominios es la siguiente
+
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar dominios}, label={Regex:dominios}, captionpos=b]
+    [a-zA-z](?:[a-zA-Z0-9]|(?:(?:[\.\-_])\w)){1,252}\.(?<tdl>[a-zA-Z]{2,6})\.?
+\end{lstlisting}
+
+Lo primero que se exige es que el dominio comience con una letra, a continuación se permiten un total de 252 caracteres válidos, es decir, alfanuméricos o uno de los siguientes símbolos (\verb!. - _!), para acabar con un “.”, seguido de dos a seis letras y con el último punto opcional.
+
+Además, se ha creado un grupo para obtener el TDL, lo que será útil para hacer posibles validaciones. 
+
+\subsection{Enlaces}
+Los enlaces que se van a analizar van a estar compuestos de un dominio seguido de una ruta, por tanto se aprovechará el código obtenido en el apartado anterior (Código \ref{Regex:dominios}). 
+
+El formato, los caracteres permitidos y el tamaño máximo de un enlace se estudió en el apartado \ref{subsec:Enlaces}.
+
+La expresión regular para capturar enlaces es la siguiente.
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar enlaces}, label={Regex:enlaces}, captionpos=b]
+    (?<domain>[a-zA-z](?:[a-zA-Z0-9]|(?:(?:[\.\-_])\w)){1,252}\.(?<tdl>[a-zA-Z]{2,6})\.?)(?:\:\d{2,5})?(?:\/[\#\%\~\$\-\_\.\+\!\*\(\)\,\;\/\?\:\@\=\&a-zA-z\d\n]*)
+\end{lstlisting}
+
+Como se puede ver, se ha creado un grupo para obtener el dominio y se da la posibilidad de obtener enlaces donde se especifica un puerto concreto <<\verb!(?:\:\d{2,5})?!>>, aunque esto no será lo habitual.
+
+\subsection{Direcciones de correo electrónico}
+Las direcciones de correo electrónico se estudiaron en el punto y la expresión regular es la siguiente: 
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar direcciones de correo electrónico}, label={Regex:email}, captionpos=b]
+    [a-zA-Z0-9-_.]{1,64}@(?<domain>[a-zA-z](?:[a-zA-Z0-9]|(?:(?:[\.\-_])\w)){1,252}\.(?<tdl>[a-zA-Z]{2,6})\.?)
+\end{lstlisting}
+
+Como se puede ver, la expresión captura de uno a sesenta y cuatro de caracteres alfanuméricos además de los símbolos <<\verb!. - _!>>, seguido de un “@” y a continuación la expresión obtenida en el punto\ref{subsec:regexDominios} (Código \ref{Regex:dominios}).
