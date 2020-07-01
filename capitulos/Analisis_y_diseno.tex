@@ -340,7 +340,7 @@ Donde:
 \subsection{Archivos EML}
 El formato EML es el más usado para guardar correos electrónicos. Aunque su especificación no está en ningún RFC concreto, en general cumple con lo definido en el RFC 5322\cite{rfc5322}, del cual son especialmente interesantes los puntos 2 “Lexical Analysis of Messages” y 3 “Syntax”. 
 
-También es interesante el RFC 4021\cite{rfc4021} donde se detallan todos los tipos de cabeceras oficiales, su formato, y una pequeña descripción de estas. En el RFC 6854\cite{rfc6854}, en concreto el punto 2 “Allowing Group Syntax in \"From:\" and \"Sender:\"” se actualiza la sintaxis de los campos “From” y “Sender”, campos muy relevantes en este proyecto ya que pueden dar información sobre el emisor del correo.
+También es interesante el RFC 4021\cite{rfc4021} donde se detallan todos los tipos de cabeceras oficiales, su formato, y una pequeña descripción de estas. En el RFC 6854\cite{rfc6854}, en concreto el punto 2 ``Allowing Group Syntax in `From:' and `Sender:' '' se actualiza la sintaxis de los campos “From” y “Sender”, campos muy relevantes en este proyecto ya que pueden dar información sobre el emisor del correo.
 
 \subsubsection{Formato}
 En líneas generales y sin entrar en detalles concretos un archivo EML está formado por un conjunto de cabeceras y opcionalmente un cuerpo. 
@@ -748,7 +748,7 @@ Esta tabla está relacionada con la tabla ipAddress, anteriormente detallada per
 \end{itemize}
 \item \textbf{EmailAddresses}: En esta tabla se almacenarán todas las direcciones de correo electrónico que se detecten. 
 
-Esta tabla también tiene especial relevancia porque la mayoría de los ataques se realizan por correo electrónico. Esta tabla se relaciona con la tabla domain, anteriormente detallada. Además, también se tiene en cuenta el enmascaramiento de direcciones falsas mediante el tag “<a>” y el atributo “href” de html.
+Esta tabla también tiene especial relevancia porque la mayoría de los ataques se realizan por correo electrónico. Esta tabla se relaciona con la tabla domain, anteriormente detallada. Además, también se tiene en cuenta el enmascaramiento de direcciones falsas mediante el tag “\verb!<a>!” y el atributo “href” de html.
 \begin{itemize}
     \item \textbf{Id}
     \item \textbf{Hash}
