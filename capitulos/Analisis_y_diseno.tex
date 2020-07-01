@@ -213,7 +213,7 @@ Por ejemplo:
       
 Precisamente esta característica es la que hace sea complicado analizar una dirección IP en su versión 6, ya que múltiples opciones son posibles y todas correctas.
 
-\paragraph{Direcciones IPv4 embebidas}\label{subsec:ipv4}
+\paragraph{Direcciones IPv4 embebidas}\label{subsec:ipv6}
 Una dirección IPv6 puede tener embebida una dirección IPv4 al final de esta, que será escrita con el mismo formato de una dirección IPv4. 
 
 Por ejemplo 
@@ -235,8 +235,9 @@ Un dominio es una cadena de caracteres que está asociada a una o varias direcci
 Según este RFC un dominio está formado por dos o más partes separadas entre sí por un punto <<.>>. 
 
 Siendo el formato como sigue: 
-
-[<Subdominio>.]<nombre de dominio>.[<SLD>.]<TLD>
+\begin{verbatim}
+    [<Subdominio>.]<nombre de dominio>.[<SLD>.]<TLD>
+\end{verbatim}
 
 Donde: 
 \begin{itemize}
@@ -265,8 +266,9 @@ También es interesante el RFC 3696 en la sección “4.1.  URI syntax definitio
 
 \subsubsection{Formato}
 El formato viene definido como sigue: 
-
-{http/https}://<dominio>[:<puerto>][/<ruta[<parámetros>]>]
+\begin{verbatim}
+    {http/https}://<dominio>[:<puerto>][/<ruta[<parámetros>]>]
+\end{verbatim}
 
 Donde:
 \begin{itemize}
@@ -293,8 +295,9 @@ La sintaxis de una dirección de correo electrónico viene definida en el rfc 53
 
 \subsubsection{Formato}
 El formato de una dirección de correo electrónico es de la siguiente forma: 
-
-<Parte local>@<dominio>
+\begin{verbatim}
+    <Parte local>@<dominio>
+\end{verbatim}
 
 Siendo:
 \begin{itemize}
@@ -323,7 +326,9 @@ El formato HTML está definido por el W3C y cuya última versión es la 4.01 del
 \subsubsection{Formato}
 Normalmente un enlace en formato HTML se define de la siguiente forma
 
-<a href:”{URI}”>{texto}</a>
+\begin{verbatim}
+    <a href:"{URI}">{texto}</a>
+\end{verbatim}
 
 Donde: 
 
@@ -335,7 +340,7 @@ Donde:
 \subsection{Archivos EML}
 El formato EML es el más usado para guardar correos electrónicos. Aunque su especificación no está en ningún RFC concreto, en general cumple con lo definido en el RFC 5322\cite{rfc5322}, del cual son especialmente interesantes los puntos 2 “Lexical Analysis of Messages” y 3 “Syntax”. 
 
-También es interesante el RFC 4021\cite{rfc4021} donde se detallan todos los tipos de cabeceras oficiales, su formato, y una pequeña descripción de estas. En el RFC 6854\cite{rfc6854}, en concreto el punto 2 “Allowing Group Syntax in "From:" and "Sender:"” se actualiza la sintaxis de los campos “From” y “Sender”, campos muy relevantes en este proyecto ya que pueden dar información sobre el emisor del correo.
+También es interesante el RFC 4021\cite{rfc4021} donde se detallan todos los tipos de cabeceras oficiales, su formato, y una pequeña descripción de estas. En el RFC 6854\cite{rfc6854}, en concreto el punto 2 “Allowing Group Syntax in \"From:\" and \"Sender:\"” se actualiza la sintaxis de los campos “From” y “Sender”, campos muy relevantes en este proyecto ya que pueden dar información sobre el emisor del correo.
 
 \subsubsection{Formato}
 En líneas generales y sin entrar en detalles concretos un archivo EML está formado por un conjunto de cabeceras y opcionalmente un cuerpo. 
@@ -345,6 +350,15 @@ Cada cabecera está formada por dos campos, por el nombre y por el cuerpo, ambos
 El cuerpo está separado de las cabeceras mediante una línea vacía y está también compuesto por una secuencia de caracteres codificada ASCII. 
 
 Es importante señalar que un único archivo EML puede contener en el interior textos con formato HTML o en texto plano.
+
+Un ejemplo sería (Para ver el documento mejor, ver apédice \ref{Documento:eml_example}): 
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[scale=0.45]{imagenes/eml_example.png}
+\caption{Ejemplo de EML}
+\end{figure}
+
 
 \section{Patrones maliciosos comúnmente usados en el correo electrónico}
 Hasta el momento únicamente se ha analizado qué tipo de información se va a analizar, qué formato tiene y qué limitaciones de codificación y/o tamaño tienen. 
@@ -368,9 +382,11 @@ Un patrón bien conocido es utilizar una gran cantidad de subdominios con el obj
 En este tipo de ataques, el dominio a suplantar suele estar escrito al principio, seguido de más subdominios, hasta llegar el domino principal. De esta manera se dificulta su identificación. 
 
 Un ejemplo de este tipo podría ser: 
+
 \begin{verbatim}
     http://www.ugr.es.custsupportref1007.dllconf.info/r1/vm/
 \end{verbatim}
+
 Como se puede observar, la URL anterior se hace pasar por el dominio “www.ugr.es”, sin embargo, su dominio principal es “dllconf.info”.
 
 Para detectar este tipo de ataque se podrían identificar el número de puntos “.” que tiene un dominio, de modo que cuantos más tenga, mayor es la probabilidad de que sea malicioso.
@@ -380,9 +396,11 @@ Para detectar este tipo de ataque se podrían identificar el número de puntos �
 Este patrón consiste en despistar al usuario usando como dominio una dirección IP y escribiendo en la ruta el dominio a suplantar. De esta forma si el usuario lee la dirección, el único domino que verá como tal es el suplantado y por tanto le dará legitimidad a la página. 
 
 Un ejemplo de este patrón es: 
+
 \begin{verbatim}
     http://211.233.39.145/www.ugr.es/login.html 
 \end{verbatim}
+
 Observando la dirección anterior puede verse como el único dominio como tal que aparece es el de “www.ugr.es”, aunque realmente el host es la IP “211.233.39.145”.
 
 Detectar este tipo de patrón podría consistir en analizar si la máquina un dominio o una dirección IP. En caso de ser una IP, se podría decir que es posiblemente maliciosa. 
@@ -391,16 +409,18 @@ Detectar este tipo de patrón podría consistir en analizar si la máquina un do
 Una variación del patrón anterior es, en vez de usar una dirección IP, usar un dominio, generalmente muy corto y añadir la dirección a suplantar en la ruta, al igual que en el caso anterior.
 
 Un ejemplo de este caso sería: 
+
 \begin{verbatim}
     http://fkDom.tl/www.ugr.es/login.html 
 \end{verbatim}
+
 Al hacer esto, un usuario que no tenga cuidado no se percatará de que el dominio realmente es “fkDom.tl” y no “www.ugr.es” como el hubiera esperado. 
 
 Para detectar este tipo de ataque, se podría comprobar que, en la ruta de un enlace, no haya ninguna otra ruta y en caso e haberla, tanto el dominio como la dirección completa serían sospechosos de ser perniciosos. 
 
 \subsection{Patrones en archivos HTML}
 \subsubsection{Ofuscación de la URL original una etiqueta tipo a}
-Uno de los métodos más comunes y simples consiste en hacer uso de la etiqueta <a> de HTML mostrando al usuario un valor distinto al recurso enlazado realmente mediante el atributo “href” de dicha etiqueta. 
+Uno de los métodos más comunes y simples consiste en hacer uso de la etiqueta \verb!<a>! de HTML mostrando al usuario un valor distinto al recurso enlazado realmente mediante el atributo “href” de dicha etiqueta. 
 
 Este patrón puede darse con varios de los posibles recursos que pueden ser enlazados mediante esta etiqueta. La cantidad de recursos depende en gran medida del soporte que tenga navegador para cada uno de los distintos esquemas asociados a cada recurso.
 
@@ -421,7 +441,7 @@ Permite enviar abrir la aplicación de correo por defecto y añadir directamente
 Por ejemplo: \verb|<a href="mailto:support@ujr.es"> support@ugr.es</a>|
 
 \paragraph{Solución}
-Una posible forma de detectar esta amenaza es, en primer lugar, comprobar si el texto mostrado al usuario es un enlace y en caso de serlo, compararlo con el enlace escrito en el atributo href de la etiqueta <a>. En caso de ser distinto, el enlace del atributo href sería podría ser un enlace malicioso. 
+Una posible forma de detectar esta amenaza es, en primer lugar, comprobar si el texto mostrado al usuario es un enlace y en caso de serlo, compararlo con el enlace escrito en el atributo href de la etiqueta \verb!<a>!. En caso de ser distinto, el enlace del atributo href sería podría ser un enlace malicioso. 
 
 \subsubsection{Uso de JavaScript}
 Cuando un correo electrónico se abre en el navegador y está en formato HTML, puede contener código JavaScript que se ejecute automáticamente al abrirse. Si bien esto es hago normal en la web, no suele serlo en un mensaje de correo, ya que su contenido suele ser estático. 
@@ -525,7 +545,7 @@ Su escalado horizontal es muy sencillo lo que asegura una gran disponibilidad y 
     \item Escalado horizontal y vertical: En Mongo escalar tanto horizontal como verticalmente es algo simple que no requiere prácticamente de configuración. 
     \item Alta disponibilidad: que el escalado horizontal sea simple permite a Mongo tener una disponibilidad muy alta, ya que esta estructura permite una mejor respuesta a fallos eventuales del sistema. 
     \item Es muy rápido en las inserciones y en las actualizaciones de datos. 
-    \item Tiene muchas más opciones para tartar datos de manera nativa. 
+    \item Tiene muchas más opciones para tratar datos de manera nativa. 
 \end{itemize}
 
 \subsubsection{Desventajas}
@@ -559,7 +579,7 @@ Su modelo de datos está basado en filas de columnas de clave-valor.
     \item Las relaciones entre elementos son complicadas.
     \item Es un cambio de paradigma complicado.
     \item La documentación no está acabada \cite{Apache_Cassandra_docu}.
-    \item Nunca se tienen conocimientos previos.
+    \item No se tienen conocimientos previos.
 \end{itemize}
 \subsubsection{Conclusión}
 Lo más interesante de Cassandra es sin duda su escalado horizontal de manera lineal, sin embargo, cuenta con numerosos problemas como que la documentación no está totalmente acabada, que el modelo de estructura de datos no encaja con los modelos de datos de este proyecto, su comunidad de usuarios tampoco es muy amplia y tampoco se tienen conocimientos anteriores, por lo que la curva de aprendizaje puede suponer un gran problema. 
@@ -589,7 +609,7 @@ De todas formas, podría ser muy interesante integrar esta herramienta en el ser
 \subsection{Conclusión}
 Después de analizar múltiples motores de bases de datos, los que más se ajustan a las necesidades de este proyecto son o un sistema SQL o Mongo, sin estar realmente claro cuál puede funcionar mejor. 
 
-Sin embargo, teniendo en cuenta que se van a realizar una gran cantidad de consultas y que estas en Mongo son lentas, y que con la gran cantidad de relaciones que hay un sistema relacional ofrece un gran soporte, finalmente se va a optar por diseñar un sistema relacional.
+Sin embargo, teniendo en cuenta que se van a realizar una gran cantidad de consultas y que éstas en Mongo son lentas, y que con la gran cantidad de relaciones que hay un sistema relacional ofrece un gran soporte, finalmente se va a optar por diseñar un sistema relacional.
 
 Además, y aunque en un principio el desarrollo puede ser más lento, al tener experiencia previa en este tipo de sistemas, contar con una gran cantidad de documentación y una comunidad amplia en caso de tener algún problema eventual hará que el desarrollo no sea tan lento como lo pudiera ser si se tuvieran conocimientos previos de Mongo. 
 
@@ -613,9 +633,9 @@ Antes de analizar cada una de las tablas, se va a precisar algunos campos comune
         \item \textbf{Score}: Es el valor de maliciosidad dado al elemento. Un número negativo indicará que es malicioso, un número positivo que es legítimo y cero que no se tiene información sobre dicho elemento. 
         \item \textbf{Hash}: Es un hash del elemento. Esto evita analizar dos veces un mismo elemento ahorrando tiempo de computación.  
         \item \textbf{Value}: Es el valor del propio elemento en sí.
-        \item \textbf{Type}: Es una clave externa a un id de la tabla <Nombre Elemento>Type, que identifica el tipo de elemento que es. 
+        \item \textbf{Type}: Es una clave externa a un id de la tabla \verb!<Nombre Elemento>Type!, que identifica el tipo de elemento que es. 
         
-        En algunos elementos se indican posibles tipos, esto se hace para facilitar la comprensión del documento, pero realmente se almacenan en la tabla <Nombre Elemento>Type.
+        En algunos elementos se indican posibles tipos, esto se hace para facilitar la comprensión del documento, pero realmente se almacenan en la tabla \verb!<Nombre Elemento>Type!.
     \end{itemize}
 \end{itemize}
 
@@ -793,7 +813,7 @@ Otras librerías que también pueden ser interesantes para leer archivos de la f
 Los algoritmos de hash en Java se encuentran en la clase MessageDigest \cite{java_MessageDigest} y cuentan con al menos las funciones MD5, SHA-1 y SHA-256.
 
 \subsubsection{Facilidad para crear una web mediante dicho lenguaje}
-lenguajes debido a la máquina virtual donde se ejecuta código, por eso se utilizar un servidor Tomcat \cite{tomcat}.
+Lenguajes debido a la máquina virtual donde se ejecuta código, por eso se utilizar un servidor Tomcat \cite{tomcat}.
 
 Encontrar hostings que soporten este tipo de servidores no es tan fácil como servidores que ejecuten código PHP.
 
