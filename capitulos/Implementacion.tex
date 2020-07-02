@@ -200,7 +200,7 @@ Y al deshacer todas sustituciones, queda como sigue:
 \end{lstlisting}
 
 Quedando finalmente: 
-\begin{lstlisting}[breaklines, caption={Expresión regular final para capturar direcciones IPv6}, label={Regex:ipv6}, captionpos=b]
+\begin{lstlisting}[breaklines, caption={Expresión regular para capturar direcciones IPv6}, label={Regex:ipv6}, captionpos=b]
 (?:(?:(?:[0-9a-fA-F]{1,4}:){6})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|(?:(?:::(?:[0-9a-fA-F]{1,4}:){5})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|(?:(?:(?:[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){4})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,1}[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){3})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,2}[0-9a-fA-F]{1,4})?::(?:[0-9a-fA-F]{1,4}:){2})(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,3}[0-9a-fA-F]{1,4})?::[0-9a-fA-F]{1,4}:)(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,4}[0-9a-fA-F]{1,4})?::)(?:(?:[0-9a-fA-F]{1,4}:[0-9a-fA-F]{1,4})|(?:(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?))))|(?:(?:(?:(?:[0-9a-fA-F]{1,4}:){0,5}[0-9a-fA-F]{1,4})?::)[0-9a-fA-F]{1,4})|(?:(?:(?:[0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{1,4})?::)
 \end{lstlisting}
 
@@ -238,3 +238,83 @@ Las direcciones de correo electrónico se estudiaron en el punto y la expresión
 \end{lstlisting}
 
 Como se puede ver, la expresión captura de uno a sesenta y cuatro de caracteres alfanuméricos además de los símbolos <<\verb!. - _!>>, seguido de un “@” y a continuación la expresión obtenida en el punto\ref{subsec:regexDominios} (Código \ref{Regex:dominios}).
+
+\section{Base de datos}
+En esta sección se van a comentar únicamente las tablas más relevantes o en las que sean más interesantes. 
+\subsection{Datos comunes}
+\subsubsection{Identificadores}
+Para los identificadores se han elegido datos enteros y sin signo de distintos tamaños, desde a.
+
+Se han definido con “\verb!auto_increment!” para aumenten de valor automáticamente. 
+
+\subsubsection{Hash}
+Los hashes se van a guardar como datos binarios de 20 bytes, tal y como lo devuelve la función de hash sha1. 
+
+\subsubsection{Fechas}
+Algunas fechas se han definido con “\verb!DEFAULT CURRENT_TIMESTAMP(6)!” para que al insertarse se inserte la fecha actual directamente desde el gestor de base de datos. 
+
+\subsection{Mensajes}
+La información de los mensajes está distribuida en varias tablas, a continuación se van a nombrar las más relevantes. 
+
+\subsubsection{Tabla MessageStatus}
+La tabla MessageStatus \ref{Tabla:MessageStatus} permite saber si un mensaje ha sigo ya o no analizado. Esto permite poder separar por un lado el almacenamiento de los mensajes de su análisis, pudiendo de esta manera almacenar de manera rápida una gran cantidad de correos y posponer el análisis para más adelante. 
+
+\subsubsection{Tabla MessageFormat}
+En la tabla MessageFormat \ref{Tabla:MessageFormat} se almacena el formato del correo para saber cómo debe ser analizado usando la librería correspondiente. 
+
+\subsubsection{Tabla AnalyzedBy}
+La tabla AnalyzedBy \ref{Tabla:AnalyzedBy} permite saber con qué se ha analizado un mensaje, esta tabla permite realizar el análisis con varias versiones de software o con distintos tipos de lenguajes y en caso de haber algún error con alguno de ellos, sería fácil encontrar los mensajes que tienen el error. 
+
+\subsubsection{Tabla MessageData}
+En la tabla MessageData \ref{Tabla:MessageData} se van a guardar todos los datos relativos a un mensaje, como su hash, cuándo fue analizado, cuándo fue añadido entre otros datos, pero no se guardará su contenido.
+
+Se ha hecho esto para ganar rendimiento tal y como recomienda el manual de MySQL cunado se sabe que un campo de una tabla puede contener datos de gran tamaño \cite{mysql_optimize_blob}. 
+
+Además, se ha creado un índice único con el campo hash, lo que por un lado va a facilitar las búsquedas con este dato y segundo, va a evitar datos duplicados \cite{mysql_unique_index}. 
+
+\subsubsection{Tabla MessageText}
+La tabla MessageText \ref{Tabla:MessageText} únicamente está destinada a almacenar el contenido de los mensajes. Además, se ha creado un índice FULLTEXT \cite{mysql_fulltext} para poder hacer consultas más complejas del texto contenido en cada mensaje. 
+
+\subsubsection{Tabla ChildMessages}
+En la tabla ChildMessages \ref{Tabla:ChildMessages} se van a guardar todas las referencias de los mensajes contenidos en otros mensajes como sucede con los correos en formato eml. 
+
+
+\subsection{Índices}
+Los índices utilizados son índices únicos y se han indexado:
+
+\begin{itemize}
+    \item Algunos valores de patrones, como las direcciones IP o los dominios.
+    \item Todos los hashes, para poder buscar por hash de manera rápida y evitar que haya datos repetidos cuando no se haya podido indexar el valor, como sucede con el texto de los mensajes.
+    \item Todos los identificadores de las tablas intermedias por separado, para poder buscar en ambas direcciones.
+\end{itemize}
+
+No se han creado más índices porque por un lado, con cada índice se disminuye la velocidad de inserción \cite{mysql_index_optimitation} y por otro, con estos índices se cubren la mayoría de las búsquedas. 
+
+\subsection{Vistas}
+Se han creado vistas para facilitar la búsqueda de información en a través de las relaciones, sobre todo, en las relaciones de muchos a muchos, esto evita que se tenga que repetir consultas que se van a utilizar en multitud de ocasiones para permitir la navegabilidad en la web. 
+
+En concreto se han creado las siguientes vistas:
+
+\begin{itemize}
+    \item MessageText\_view (Vista \ref{vista:MessageTextview}): Permite visualizar el mensaje en la web junto con toda la información relacionada con él.
+    \item MessageData\_view (Vista \ref{vista:MessageDataview}): Permite visualizar todos los datos relacionados con un mensaje en concreto (Pero no el texto del mensaje)
+    \item IpAddress\_view (Vista \ref{vista:IpAddress_view}): Permite visualizar la dirección IP en la web junto con toda la información relacionada con él. 
+    \item Domain\_view (Vista \ref{vista:Domain_view}): Permite visualizar el dominio en la web junto con toda la información relacionada con él.
+    \item domain\_ip (Vista \ref{vista:domain_ip}): permite buscar información sobre las direcciones IP buscando por el valor o el hash de un dominio concreto.  
+    \item Subdomain (Vista \ref{vista:subdomain}): Permite saber todos los subdominios de un dominio concreto.
+    \item IpAddress\_MessageData (Vista \ref{vista:IpAddress_MessageData}): Permite saber todos los mensajes que tienen una dirección IP concreta, buscando por su valor o hash. 
+    \item ip\_domain (Vista \ref{vista:ip_domain}): permite obtener información sobre un dominio buscando por el valor o el hash de una dirección IP concreta. 
+    \item Domain\_MessageData (Vista \ref{vista:Domain_MessageData}):  permite obtener información sobre los mensajes donde aparece un dominio concreto buscando por el hash o por el valor. 
+    \item domain\_url (Vista \ref{vista:domain_url}): permite buscar información sobre los enlaces de un dominio concreto buscando por el valor o el hash. 
+    \item domain\_email (Vista \ref{vista:domain_email}): permite buscar información sobre las direcciones de correo de un dominio concreto buscando por el valor o el hash.
+    \item EmailAddress\_view (Vista \ref{vista:EmailAddress_view}): Permitie visualizar una dirección de correo y la información relacionada con ella. 
+    \item EmailAddress\_MessageData (Vista \ref{vista:EmailAddress_MessageData}): permite obtener información sobre los mensajes donde aparece una dirección de correo concreta buscando por el hash o por el valor de la dirección. 
+    \item Url\_view (Vista \ref{vista:Url_view}): Permitie visualizar un enlace y la información relacionada con él.
+    \item Url\_MessageData (Vista \ref{vista:Url_MessageData}): permite obtener información sobre los mensajes donde aparece un enlace concreto buscando por el hash o por el valor del enlace.
+    \item MessageData\_IpAddress\_view (Vista \ref{vista:MessageData_IpAddress_view}): permite obtener información sobre todas las direcciones IP que aparecen en un mensaje buscando por el hash del mensaje.
+    \item MessageData\_EmailAddress\_view (Vista \ref{vista:MessageData_EmailAddress_view}): permite obtener información sobre todas las direcciones de correo que aparecen en un mensaje buscando por el hash del mensaje.
+    \item MessageData\_Domain\_view (Vista \ref{vista:MessageData_Domain_view}): permite obtener información sobre todos los dominios que aparecen en un mensaje buscando por el hash del mensaje.
+    \item MessageData\_Url\_view (Vista \ref{vista:MessageData_Url_view}): permite obtener información sobre todos los enlaces que aparecen en un mensaje buscando por el hash del mensaje.
+    \item MessageData\_child\_view (Vista \ref{vista:MessageData_child_view}): permite obtener información sobre todos los mensajes contenidos en el mensaje actual. (Se usa en los mensajes con formato EML)
+    \item MessageData\_parent\_view (Vista \ref{vista:MessageData_parent_view}): permite obtener información sobre todos los mensajes que contienen en el mensaje actual. (Se usa para ver si el mensaje actual, está en alguno o en varios mensajes en formato EML)    
+\end{itemize}
