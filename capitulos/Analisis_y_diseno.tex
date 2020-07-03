@@ -446,7 +446,7 @@ Una posible forma de detectar esta amenaza es, en primer lugar, comprobar si el 
 \subsubsection{Uso de JavaScript}
 Cuando un correo electrónico se abre en el navegador y está en formato HTML, puede contener código JavaScript que se ejecute automáticamente al abrirse. Si bien esto es hago normal en la web, no suele serlo en un mensaje de correo, ya que su contenido suele ser estático. 
 
-Este tipo de código siempre va asociado a una etiqueta \verb|<script></<script>|, por tanto, una forma sencilla de detectar este patrón es simplemente comprobar si esta etiqueta aparece o no en el mensaje. 
+Este tipo de código siempre va asociado a una etiqueta ``\verb|<script>|\\\verb|</script>|'', por tanto, una forma sencilla de detectar este patrón es simplemente comprobar si esta etiqueta aparece o no en el mensaje. 
 
 \section{Integraciones de terceros}
 A lo largo de esta sección se va a hablar de algunos servicios de terceros que pueden complementar los análisis de la plataforma. 
@@ -628,12 +628,12 @@ Antes de analizar cada una de las tablas, se va a precisar algunos campos comune
 \begin{itemize}
     \item[] 
     \begin{itemize}
-        \item \textbf{Id}: Es la clave primaria de la tabla. Siempre es un entero. Se ha elegido esta opción por rendimiento. 
-        \item \textbf{Ocurrences}: Es el número de veces que este elemento ha llegado para analizarse.
-        \item \textbf{Score}: Es el valor de maliciosidad dado al elemento. Un número negativo indicará que es malicioso, un número positivo que es legítimo y cero que no se tiene información sobre dicho elemento. 
-        \item \textbf{Hash}: Es un hash del elemento. Esto evita analizar dos veces un mismo elemento ahorrando tiempo de computación.  
-        \item \textbf{Value}: Es el valor del propio elemento en sí.
-        \item \textbf{Type}: Es una clave externa a un id de la tabla \verb!<Nombre Elemento>Type!, que identifica el tipo de elemento que es. 
+        \item \texttt{Id}: Es la clave primaria de la tabla. Siempre es un entero. Se ha elegido esta opción por rendimiento. 
+        \item \texttt{Ocurrences}: Es el número de veces que este elemento ha llegado para analizarse.
+        \item \texttt{Score}: Es el valor de maliciosidad dado al elemento. Un número negativo indicará que es malicioso, un número positivo que es legítimo y cero que no se tiene información sobre dicho elemento. 
+        \item \texttt{Hash}: Es un hash del elemento. Esto evita analizar dos veces un mismo elemento ahorrando tiempo de computación.  
+        \item \texttt{Value}: Es el valor del propio elemento en sí.
+        \item \texttt{Type}: Es una clave externa a un id de la tabla \verb!<Nombre Elemento>Type!, que identifica el tipo de elemento que es. 
         
         En algunos elementos se indican posibles tipos, esto se hace para facilitar la comprensión del documento, pero realmente se almacenan en la tabla \verb!<Nombre Elemento>Type!.
     \end{itemize}
@@ -641,45 +641,45 @@ Antes de analizar cada una de las tablas, se va a precisar algunos campos comune
 
 \subsubsection{Tablas genéricas}
 \begin{itemize}
-    \item \textbf{<Nombre Elemento>Delete}: Estas tablas están asociadas a cada uno de los elementos a almacenar susceptibles de ser borrados, como mensajes, emails,…
+    \item \texttt{<Nombre Elemento>Delete}: Estas tablas están asociadas a cada uno de los elementos a almacenar susceptibles de ser borrados, como mensajes, emails,…
     
     Esto permite cumplir con el derecho al olvido de la ley de protección de datos europea.
     \begin{itemize}
-        \item \textbf{Id}
-        \item \textbf{Id<Nombre Elemento>}: es una clave externa al elemento en cuestión.
-        \item \textbf{Hash}: Este hash permite identificar a cada elemento insertado, de modo que se le da al usuario la posibilidad de borrarlo si tiene el hash. 
+        \item \texttt{Id}
+        \item \texttt{Id<Nombre Elemento>}: es una clave externa al elemento en cuestión.
+        \item \texttt{Hash}: Este hash permite identificar a cada elemento insertado, de modo que se le da al usuario la posibilidad de borrarlo si tiene el hash. 
         Está formado por el valor del elemento, una marca de tiempo y un valor aleatorio.
         Si dos usuarios introducen el mismo elemento, y sólo uno de ellos quiere borrarlo, el elemento permanecerá hasta que todos los usuarios que lo han introducido quieran borrarlo.
     \end{itemize}
-        \item <Nombre Elemento>Souces: Identifica todas las fuentes de las que proviene el mensaje, pudiendo darle más o menos valor a la información que contenga en función de la fuente de la que provenga. Ej: emails identificados como maliciosos a mano tendrán más valor que los identificados por la IA (O al revés)
+        \item \texttt{<Nombre Elemento>Souces}: Identifica todas las fuentes de las que proviene el mensaje, pudiendo darle más o menos valor a la información que contenga en función de la fuente de la que provenga. Ej: emails identificados como maliciosos a mano tendrán más valor que los identificados por la IA (O al revés)
         \begin{itemize}
-            \item \textbf{Id}
-            \item \textbf{SourceName}: Nombre de la fuente de la que proviene.
-            \item \textbf{Score}
+            \item \texttt{Id}
+            \item \texttt{SourceName}: Nombre de la fuente de la que proviene.
+            \item \texttt{Score}
         \end{itemize}
-    \item <Nombre Elemento>Souces: Identifica todas las fuentes de las que proviene el mensaje, pudiendo darle más o menos valor a la información que contenga en función de la fuente de la que provenga. Ej: emails identificados como maliciosos a mano tendrán más valor que los identificados por la IA (O al revés)
+    \item \texttt{<Nombre Elemento>Souces}: Identifica todas las fuentes de las que proviene el mensaje, pudiendo darle más o menos valor a la información que contenga en función de la fuente de la que provenga. Ej: emails identificados como maliciosos a mano tendrán más valor que los identificados por la IA (O al revés)
     \begin{itemize}
-        \item \textbf{Id}
-        \item \textbf{Value}: Nombre de la fuente de la que proviene.
-        \item \textbf{Score} 
+        \item \texttt{Id}
+        \item \texttt{Value}: Nombre de la fuente de la que proviene.
+        \item \texttt{Score} 
     \end{itemize}
-    \item \textbf{<Nombre Elemento>Type}: Identifica los posibles tipos del elemento, por ejemplo, si el elemento en cuestión es una criptomoneda, identifica el tipo de criptomoneda que es. 
+    \item \texttt{<Nombre Elemento>Type}: Identifica los posibles tipos del elemento, por ejemplo, si el elemento en cuestión es una criptomoneda, identifica el tipo de criptomoneda que es. 
     \begin{itemize}
-        \item \textbf{Id}
-        \item \textbf{Value}: Es el nombre del tipo.
+        \item \texttt{Id}
+        \item \texttt{Value}: Es el nombre del tipo.
     \end{itemize}
-    \item \textbf{<Nombre Elemento>MaliciousChecks}: Identifica cada uno de los posibles patrones maliciosos de dicho elemento, como por ejemplo en el caso de una URL, no coincida el valor del atributo “href” con lo mostrado al usuario.
+    \item \texttt{<Nombre Elemento>MaliciousChecks}: Identifica cada uno de los posibles patrones maliciosos de dicho elemento, como por ejemplo en el caso de una URL, no coincida el valor del atributo “href” con lo mostrado al usuario.
     \begin{itemize}
-        \item \textbf{Id}
-        \item \textbf{Value}: es el nombre de patrón.
-        \item \textbf{Score}
+        \item \texttt{Id}
+        \item \texttt{Value}: es el nombre de patrón.
+        \item \texttt{Score}
     \end{itemize}
-    \item \textbf{<Nombre Elemento1>\_<Nombre Elemento2>}: Esto son tablas intermedias para dejar la base de datos en Forma normal de Boyce-Codd cuando la multiplicidad es de muchos a muchos.
+    \item \texttt{<Nombre Elemento1>\_<Nombre Elemento2>}: Esto son tablas intermedias para dejar la base de datos en Forma normal de Boyce-Codd cuando la multiplicidad es de muchos a muchos.
     \begin{itemize}
-        \item \textbf{Id}
-        \item \textbf{Id<Nombre Elemento1>}: es una clave externa a un id de la tabla <Nombre Elemento1> 
-        \item \textbf{Id<Nombre Elemento2>}: es una clave externa a un id de la tabla <Nombre Elemento2> 
-        \item \textbf{Date} \emph{(Opcional)}: Permite registrar el mismo elemento, mediante la misma fuente, más de una vez. Esto puede permitir detectar elementos muy analizados en un instante de tiempo, típico por ejemplo cuando se realiza una nueva campaña de phishing, dicho elemento tendrá un pico de análisis cuando se realice la campaña.
+        \item \texttt{Id}
+        \item \texttt{Id<Nombre Elemento1>}: es una clave externa a un id de la tabla \texttt{<Nombre Elemento1>}
+        \item \texttt{Id<Nombre Elemento2>}: es una clave externa a un id de la tabla \texttt{<Nombre Elemento2>}
+        \item \texttt{Date} \emph{(Opcional)}: Permite registrar el mismo elemento, mediante la misma fuente, más de una vez. Esto puede permitir detectar elementos muy analizados en un instante de tiempo, típico por ejemplo cuando se realiza una nueva campaña de phishing, dicho elemento tendrá un pico de análisis cuando se realice la campaña.
     \end{itemize}
 \end{itemize}
 
@@ -699,63 +699,63 @@ Se pueden distinguir tres tipos de datos:
 
 \paragraph{Mensajes}
 \begin{itemize}
-    \item \textbf{Message}: es la tabla principal del proyecto. En esta tabla se guardarán los mensajes o la ubicación de estos y está formada por los siguientes campos: 
+    \item \texttt{Message}: es la tabla principal del proyecto. En esta tabla se guardarán los mensajes o la ubicación de estos y está formada por los siguientes campos: 
 \begin{itemize}
-    \item \textbf{Id}
-    \item \textbf{Hash}
-    \item \textbf{Value}
-    \item \textbf{Occurrences}
-    \item \textbf{Score}
-    \item \textbf{Kind}: [eml, html, text]
-    \item \textbf{AnalyzedBy}: en caso de tener varios lenguajes o varias formas de análisis, permite saber con qué lenguaje se ha hecho
-    \item \textbf{Status}: indica si está analizado o pendiente de analizar.
-    \item \textbf{AnalyzedAt}: indica la fecha del último análisis. (Esto permite que si en el futuro se añade nuevos análisis, sólo se analicen los archivos anteriores a la fecha de implementación)
+    \item \texttt{Id}
+    \item \texttt{Hash}
+    \item \texttt{Value}
+    \item \texttt{Occurrences}
+    \item \texttt{Score}
+    \item \texttt{Kind}: [eml, html, text]
+    \item \texttt{AnalyzedBy}: en caso de tener varios lenguajes o varias formas de análisis, permite saber con qué lenguaje se ha hecho
+    \item \texttt{Status}: indica si está analizado o pendiente de analizar.
+    \item \texttt{AnalyzedAt}: indica la fecha del último análisis. (Esto permite que si en el futuro se añade nuevos análisis, sólo se analicen los archivos anteriores a la fecha de implementación)
 \end{itemize}
 \end{itemize}
 \paragraph{Elementos a detectar en los mensajes}
 \begin{itemize}
-    \item \textbf{IpAddresss}: Son direcciones ip que pueden ser maliciosas o no, en función del score.: 
+    \item \texttt{IpAddresss}: Son direcciones ip que pueden ser maliciosas o no, en función del score.: 
 \begin{itemize}
-    \item \textbf{Id}
-    \item \textbf{Hash}
-    \item \textbf{Value}
-    \item \textbf{Occurrences}
-    \item \textbf{Score}
-    \item \textbf{ipV4}: indica si la ip es v4 o v6.
+    \item \texttt{Id}
+    \item \texttt{Hash}
+    \item \texttt{Value}
+    \item \texttt{Occurrences}
+    \item \texttt{Score}
+    \item \texttt{ipV4}: indica si la ip es v4 o v6.
 \end{itemize}
-\item \textbf{Domain}: en esta tabla se almacenan tanto dominios como subdominios. Los subdominios tendrán una clave externa al dominio. 
+\item \texttt{Domain}: en esta tabla se almacenan tanto dominios como subdominios. Los subdominios tendrán una clave externa al dominio. 
 
 Puede haber dominios en los que todos sus subdominios sean maliciosos o en los que no tengan relación. (Véase el caso de los subdominios de wordpress.com o blogspot.com)
 
 Esta tabla está relacionada con la tabla ipAddress, anteriormente detallada permitiendo tanto a un dominio tener varias direcciones IP y como tener varios dominios apuntando a la misma IP, y estas ser tanto IPv4 como IPv6
 
 \begin{itemize}
-    \item \textbf{Id}
-    \item \textbf{Hash}
-    \item \textbf{Value}
-    \item \textbf{Occurrences}
-    \item \textbf{Score}
-    \item \textbf{DomainId}: permite identificar el domino en caso de ser un subdominio.
+    \item \texttt{Id}
+    \item \texttt{Hash}
+    \item \texttt{Value}
+    \item \texttt{Occurrences}
+    \item \texttt{Score}
+    \item \texttt{DomainId}: permite identificar el domino en caso de ser un subdominio.
 \end{itemize}
-\item \textbf{URL}: Son enlaces, es decir una ruta de un dominio y van a estar siempre asociadas a él. Este es un elemento clave a analizar pues la inmensa mayoría de los ataques de phishing se producen al ingresar en una url falsa.
+\item \texttt{URL}: Son enlaces, es decir una ruta de un dominio y van a estar siempre asociadas a él. Este es un elemento clave a analizar pues la inmensa mayoría de los ataques de phishing se producen al ingresar en una url falsa.
 \begin{itemize}
-    \item \textbf{Id}
-    \item \textbf{Hash}
-    \item \textbf{Value}
-    \item \textbf{Occurrences}
-    \item \textbf{Score}
-    \item \textbf{Domain}: Es un clave externa a la tabla domains como ya se ha detallado con anterioridad.
+    \item \texttt{Id}
+    \item \texttt{Hash}
+    \item \texttt{Value}
+    \item \texttt{Occurrences}
+    \item \texttt{Score}
+    \item \texttt{Domain}: Es un clave externa a la tabla domains como ya se ha detallado con anterioridad.
 \end{itemize}
-\item \textbf{EmailAddresses}: En esta tabla se almacenarán todas las direcciones de correo electrónico que se detecten. 
+\item \texttt{EmailAddresses}: En esta tabla se almacenarán todas las direcciones de correo electrónico que se detecten. 
 
 Esta tabla también tiene especial relevancia porque la mayoría de los ataques se realizan por correo electrónico. Esta tabla se relaciona con la tabla domain, anteriormente detallada. Además, también se tiene en cuenta el enmascaramiento de direcciones falsas mediante el tag “\verb!<a>!” y el atributo “href” de html.
 \begin{itemize}
-    \item \textbf{Id}
-    \item \textbf{Hash}
-    \item \textbf{Value}
-    \item \textbf{Occurrences}
-    \item \textbf{Score}
-    \item \textbf{Domain}: Es un clave externa a la tabla domains como ya se ha detallado con anterioridad.
+    \item \texttt{Id}
+    \item \texttt{Hash}
+    \item \texttt{Value}
+    \item \texttt{Occurrences}
+    \item \texttt{Score}
+    \item \texttt{Domain}: Es un clave externa a la tabla domains como ya se ha detallado con anterioridad.
 \end{itemize}
 
 \end{itemize}
