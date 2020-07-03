@@ -1,5 +1,5 @@
 \chapter{Implementación}
-\section{Expresiones regulares}
+\section{Expresiones regulares}\label{imp:expresiones_regulares}
 Se ha elegido esta forma de extraer los datos por ser una forma rápida y eficiente de extraer datos que comparten un patrón más o menos definido.
 \subsection{Direcciones IP}
 \subsubsection{IPv4}
@@ -296,25 +296,276 @@ Se han creado vistas para facilitar la búsqueda de información en a través de
 En concreto se han creado las siguientes vistas:
 
 \begin{itemize}
-    \item MessageText\_view (Vista \ref{vista:MessageTextview}): Permite visualizar el mensaje en la web junto con toda la información relacionada con él.
-    \item MessageData\_view (Vista \ref{vista:MessageDataview}): Permite visualizar todos los datos relacionados con un mensaje en concreto (Pero no el texto del mensaje)
-    \item IpAddress\_view (Vista \ref{vista:IpAddress_view}): Permite visualizar la dirección IP en la web junto con toda la información relacionada con él. 
-    \item Domain\_view (Vista \ref{vista:Domain_view}): Permite visualizar el dominio en la web junto con toda la información relacionada con él.
-    \item domain\_ip (Vista \ref{vista:domain_ip}): permite buscar información sobre las direcciones IP buscando por el valor o el hash de un dominio concreto.  
-    \item Subdomain (Vista \ref{vista:subdomain}): Permite saber todos los subdominios de un dominio concreto.
-    \item IpAddress\_MessageData (Vista \ref{vista:IpAddress_MessageData}): Permite saber todos los mensajes que tienen una dirección IP concreta, buscando por su valor o hash. 
-    \item ip\_domain (Vista \ref{vista:ip_domain}): permite obtener información sobre un dominio buscando por el valor o el hash de una dirección IP concreta. 
-    \item Domain\_MessageData (Vista \ref{vista:Domain_MessageData}):  permite obtener información sobre los mensajes donde aparece un dominio concreto buscando por el hash o por el valor. 
-    \item domain\_url (Vista \ref{vista:domain_url}): permite buscar información sobre los enlaces de un dominio concreto buscando por el valor o el hash. 
-    \item domain\_email (Vista \ref{vista:domain_email}): permite buscar información sobre las direcciones de correo de un dominio concreto buscando por el valor o el hash.
-    \item EmailAddress\_view (Vista \ref{vista:EmailAddress_view}): Permitie visualizar una dirección de correo y la información relacionada con ella. 
-    \item EmailAddress\_MessageData (Vista \ref{vista:EmailAddress_MessageData}): permite obtener información sobre los mensajes donde aparece una dirección de correo concreta buscando por el hash o por el valor de la dirección. 
-    \item Url\_view (Vista \ref{vista:Url_view}): Permitie visualizar un enlace y la información relacionada con él.
-    \item Url\_MessageData (Vista \ref{vista:Url_MessageData}): permite obtener información sobre los mensajes donde aparece un enlace concreto buscando por el hash o por el valor del enlace.
-    \item MessageData\_IpAddress\_view (Vista \ref{vista:MessageData_IpAddress_view}): permite obtener información sobre todas las direcciones IP que aparecen en un mensaje buscando por el hash del mensaje.
-    \item MessageData\_EmailAddress\_view (Vista \ref{vista:MessageData_EmailAddress_view}): permite obtener información sobre todas las direcciones de correo que aparecen en un mensaje buscando por el hash del mensaje.
-    \item MessageData\_Domain\_view (Vista \ref{vista:MessageData_Domain_view}): permite obtener información sobre todos los dominios que aparecen en un mensaje buscando por el hash del mensaje.
-    \item MessageData\_Url\_view (Vista \ref{vista:MessageData_Url_view}): permite obtener información sobre todos los enlaces que aparecen en un mensaje buscando por el hash del mensaje.
-    \item MessageData\_child\_view (Vista \ref{vista:MessageData_child_view}): permite obtener información sobre todos los mensajes contenidos en el mensaje actual. (Se usa en los mensajes con formato EML)
-    \item MessageData\_parent\_view (Vista \ref{vista:MessageData_parent_view}): permite obtener información sobre todos los mensajes que contienen en el mensaje actual. (Se usa para ver si el mensaje actual, está en alguno o en varios mensajes en formato EML)    
+    \item \verb!MessageText_view! (Vista \ref{vista:MessageTextview}): Permite visualizar el mensaje en la web junto con toda la información relacionada con él.
+    \item \verb!MessageData_view! (Vista \ref{vista:MessageDataview}): Permite visualizar todos los datos relacionados con un mensaje en concreto (Pero no el texto del mensaje)
+    \item \verb!IpAddress_view! (Vista \ref{vista:IpAddress_view}): Permite visualizar la dirección IP en la web junto con toda la información relacionada con él. 
+    \item \verb!Domain_view! (Vista \ref{vista:Domain_view}): Permite visualizar el dominio en la web junto con toda la información relacionada con él.
+    \item \verb!domain_ip! (Vista \ref{vista:domain_ip}): permite buscar información sobre las direcciones IP buscando por el valor o el hash de un dominio concreto.  
+    \item \verb!Subdomain! (Vista \ref{vista:subdomain}): Permite saber todos los subdominios de un dominio concreto.
+    \item \verb!IpAddress_MessageData! (Vista \ref{vista:IpAddress_MessageData}): Permite saber todos los mensajes que tienen una dirección IP concreta, buscando por su valor o hash. 
+    \item \verb!ip_domain! (Vista \ref{vista:ip_domain}): permite obtener información sobre un dominio buscando por el valor o el hash de una dirección IP concreta. 
+    \item \verb!Domain_MessageData! (Vista \ref{vista:Domain_MessageData}):  permite obtener información sobre los mensajes donde aparece un dominio concreto buscando por el hash o por el valor. 
+    \item \verb!domain_url! (Vista \ref{vista:domain_url}): permite buscar información sobre los enlaces de un dominio concreto buscando por el valor o el hash. 
+    \item \verb!domain_email! (Vista \ref{vista:domain_email}): permite buscar información sobre las direcciones de correo de un dominio concreto buscando por el valor o el hash.
+    \item \verb!EmailAddress_view! (Vista \ref{vista:EmailAddress_view}): Permitie visualizar una dirección de correo y la información relacionada con ella. 
+    \item \verb!EmailAddress_MessageData! (Vista \ref{vista:EmailAddress_MessageData}): permite obtener información sobre los mensajes donde aparece una dirección de correo concreta buscando por el hash o por el valor de la dirección. 
+    \item \verb!Url_view! (Vista \ref{vista:Url_view}): Permitie visualizar un enlace y la información relacionada con él.
+    \item \verb!Url_MessageData! (Vista \ref{vista:Url_MessageData}): permite obtener información sobre los mensajes donde aparece un enlace concreto buscando por el hash o por el valor del enlace.
+    \item \verb!MessageData_IpAddress_view! (Vista \ref{vista:MessageData_IpAddress_view}): permite obtener información sobre todas las direcciones IP que aparecen en un mensaje buscando por el hash del mensaje.
+    \item \verb!MessageData_EmailAddress_view! (Vista \ref{vista:MessageData_EmailAddress_view}): permite obtener información sobre todas las direcciones de correo que aparecen en un mensaje buscando por el hash del mensaje.
+    \item \verb!MessageData_Domain_view! (Vista \ref{vista:MessageData_Domain_view}): permite obtener información sobre todos los dominios que aparecen en un mensaje buscando por el hash del mensaje.
+    \item \verb!MessageData_Url_view! (Vista \ref{vista:MessageData_Url_view}): permite obtener información sobre todos los enlaces que aparecen en un mensaje buscando por el hash del mensaje.
+    \item \verb!MessageData_child_view! (Vista \ref{vista:MessageData_child_view}): permite obtener información sobre todos los mensajes contenidos en el mensaje actual. (Se usa en los mensajes con formato EML)
+    \item \verb!MessageData_parent_view! (Vista \ref{vista:MessageData_parent_view}): permite obtener información sobre todos los mensajes que contienen en el mensaje actual. (Se usa para ver si el mensaje actual, está en alguno o en varios mensajes en formato EML)    
 \end{itemize}
+
+\section{Código}
+La aplicación está hecha en PHP y se ejecuta con Apache, como gestor de base de datos, se ha usado MySQL. 
+
+\subsection{Estructura de carpetas}
+Se ha seguido el modelo “Modelo-vista-controlador” (ver punto \ref{diagrama_MVC}) con la siguiente estructura de carpetas (Ver figura \ref{fig:estructuraCarpetas}): 
+
+\begin{itemize}
+    \item Modelos: Son los encargados de acceder a la base de datos y obtener la información necesaria para generar la vista. 
+    \item Vista: En ella se mostrará el contenido que se ha obtenido del modelo. 
+    \item Controlador: Es el encargado de elegir la vista y el modelo adecuado.
+    El controlador contiene todas las posibles rutas válidas de la aplicación. 
+    \item Dependencias: En esta carpeta están todas las dependencias usadas como Twig o la integración con Virus Total.
+    \item Config: es donde se almacenan datos sensibles que no se deben escribir en código como usuarios y contraseñas de la base de datos, o la clave de la API de Virus Total.  
+\end{itemize}
+
+\begin{figure}[htb]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{spiral}
+    \includegraphics[width=0.6\textwidth]{imagenes/Estructura_carpetas.png}
+\caption{Estructura de carpetas de la aplicación}
+\label{fig:estructuraCarpetas}
+\end{figure}
+
+\subsection{Diagrama de clases}
+Para facilitar la comprensión y que los diagramas se puedan interpretar de manera más sencilla, el diagrama de clases se va a dividir en cuatro partes. 
+\begin{enumerate}
+    \item Análisis: Esta parte se corresponde con el análisis de los mensajes. Estaría dentro del controlador del index y es la parte encargada de extraer los patrones.
+    \item Controladores.
+    \item Modelos.
+    \item Vistas.
+\end{enumerate}
+\subsubsection{Análisis}
+La parte del análisis está compuesta por tres partes (Ver figura \ref{fig:DC_anslisis}):
+\begin{enumerate}
+    \item Analyzer: Esta clase es la encargada de leer el mensaje en función del formato. 
+    \item PatternSearcher: Es la clase encargada de buscar y extraer los patrones mediante las expresiones regulares que están almacenadas en la constante \textit{PATTERNS}. También valida que en el caso de los dominios (O los enlaces o las direcciones de correo) tentan un TDL correcto. 
+    \item PatternContainer: En esta clase se almacenarán todos los patrones encargados. Evitará que haya repetidos, añadirá las características y las relaciones necesarias y se encargará de almacenar los datos en la base de datos mendiante el método \textit{save()} 
+\end{enumerate}
+
+\begin{figure}[htb]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{spiral}
+    \includegraphics[width=0.6\textwidth]{imagenes/DiagramasClases/Analizador.png}
+\caption{Estructura de carpetas de la aplicación}
+\label{fig:DC_anslisis}
+\end{figure}
+
+\subsubsection{Controladores}
+Los controladores permiten al usuario navegar por la web, en el controlador index es donde se permite al usuario enviar a analizar los correos, los demás son de consulta (correos, direcciones IP, dominios, enlaces y direcciones de correo).
+
+Un ejemplo de controlador sería el código \ref{Codigo:controlador}
+
+\begin{lstlisting}[
+    language=PHP,
+    breaklines, 
+    caption={Ejemplo de controlador}, 
+    label={Codigo:controlador}, 
+    captionpos=b]
+    class Domain extends Controller
+    {	
+        function __construct($request){
+            parent::__construct('Domain.html', $request);
+        }
+        public function render(){
+
+            $value = $this->request->getNextElement();
+            if($value){
+                $info = DataAccessObjectFactory::getDataAccessObject("DomainDAO_SQL_PDO")->getInfo($value);
+                $this->addArgument("info", $info);
+            }
+            return parent::renderDirectly();
+        }
+    }
+\end{lstlisting}
+
+Todos los controladores heredan de una clase abstracta llamada Controller (Ver figura \ref{fig:DC_controladores}), en ella se almacenan todos los métodos genéricos, como la llamada a la librería de Twig o el nombre de la vista. También se crea un objeto Request en el que almacena información sobre la dirección en la que el usuario a clicado, esto permite al controlador saber qué vista debe generar y a qué modelo llamar. 
+
+\paragraph{Clase Controller}
+De esta clase destacan los siguientes métodos: 
+\begin{itemize}
+    \item notFound: se utiiza si se intenta acceder a una URL que el controlados no conoce. 
+    \item addArgument: permite a las clases que heredan de ella añadir argumentos que se pasarán a la vista.
+    \item render: es el método que genera la vista y la envía una vez que tiene todos los argumentos necesarios para generarla. 
+\end{itemize}
+
+\paragraph{Clase Request}
+De esta clase destacan los siguientes métodos: 
+\begin{itemize}
+    \item getMethod: indica si el método con el que se hace la petición a Apache es get o Post.
+    \item getNextElement: devuelve la siguiente parte del path si este está separado mediante ``\verb!/!''.
+\end{itemize}
+
+\begin{figure}[htb]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{spiral}
+    \includegraphics[width=0.8\textwidth]{imagenes/DiagramasClases/Controladores.png}
+\caption{Diagrama de clases de los controladores}
+\label{fig:DC_controladores}
+\end{figure}
+
+\subsubsection{Modelos}
+Los modelos son los únicos encargados de interactuar con la base de datos, para hacer esto se ha hecho uso de la clase PDO de PHP, ya que aporta seguridad respecto a mysqli \cite{why_pdo_vs_msqli} y permite una migración sencilla a otro tipo de gestor de base de datos, como ya se ha mencionado (Ver apartado \ref{php_bases_de_datos}).
+
+Para esto se ha utilizado la figura del Objeto de acceso a datos (DAO del inglés Data Access Object). Para evitar duplicar código, se ha creado una clase abstracta genérica llamada DataAccessObjectPDO de la cual extenderán las demás (Ver figura \ref{fig:DC_modelos}).
+
+Esta clase está compuesta por un objeto de la clase DataBasePDO, en él se leerá un archivo de configuración con los parámetros de conexión a la base de datos. 
+El separar estos dos objetos se hace para que puedan coexistir dos bases de datos al mismo tiempo.
+
+\paragraph{Clase DataAccessObjectPDO}
+
+De esta clase destacan los siguientes métodos: 
+\begin{itemize}
+    \item getConnection: Se utiliza para realizar la conexión con la base de datos. 
+    \item getConnectionReadOnly: Es similar al método anterior, pero no se podrán leer datos.
+    \item getItems: Es un método genérico para poder obtener todos los datos de la tabla del modelo actual.
+    \item pagination: permite obtener una fracción de los datos de la tabla del modelo actual.
+    \item prepare: genera una consulta preparada. 
+    \item hash: se utiliza para generar el hash dado el valor. 
+    \item findOrInsertFromArrayValues: permite obtener información a partir de un array de datos y en caso de no encontrarse, se insertan los elementos. 
+    \item insertOrUpdateFromArrayValues: Se inserta un array de datos y en caso de existir ya el elemento, lo actualiza. 
+\end{itemize}
+
+Las clases que hereden de esta, tendrán que implementar dos métodos, \textit{getInfo()}, que se usa para obtener la información necesaria para la vista e \textit{insert()} que permite insertar objetos desde los métodos \textit{findOrInsertFromArrayValues()} o \textit{insertOrUpdateFromArrayValues()}. 
+
+
+\begin{figure}[htb]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{spiral}
+    \includegraphics[width=0.8\textwidth]{imagenes/DiagramasClases/Modelos.png}
+\caption{Diagrama de clases de los modelos}
+\label{fig:DC_modelos}
+\end{figure}
+
+\subsubsection{Vistas}
+Al ser una aplicación web, las vistas están hechas con HTML, CSS y JavaScript. En esta parte se ha utilizado Twig como gestor de plantillas y Bootstrap como librería para el diseño de la web. 
+
+\paragraph{Twig}
+Twig es un gestor de plantillas desarrollado por Symfony \cite{Twig} para PHP. Esto facilita la reutilización de código y el paso de información del modelo a la vista.
+
+Gracias a la propiedad de herencia de Twig \cite{twig_extends}, se ha creado una plantilla base de la que heredarán las demás, de esta manera toda la información que es común se mantiene a lo largo de todas las vistas sin tener que repetir código, como por ejemplo la parte del header o del footer (ver figura \ref{fig:DC_vistas}). También se importará Bootstrap. 
+
+\paragraph{Bootstrap}
+Bootstrap es una librería desarrollada por Twitter con una gran cantidad de opciones y facilidades para el diseño web \cite{Bootstrap}. 
+Se ha utilizado sobre todo para hacer la web adaptable a dispositivos móviles.
+
+\begin{figure}[htb]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{spiral}
+    \includegraphics[width=0.8\textwidth]{imagenes/DiagramasClases/Vistas.png}
+\caption{Diagrama de clases de las vistas}
+\label{fig:DC_vistas}
+\end{figure}
+
+\subsection{Diagrama de flujo}
+\subsubsection{Modelo Modelo-Vista-Controlador}\label{diagrama_MVC}
+El modelo Modelo-Vista-Controlador se puede explicar mediante la secuencia sigueinte (Ver figura \ref{fig:MVC}): 
+\begin{enumerate}
+    \item El cliente realiza una acción que es capturada por el controlador. 
+    \item El controlador elige un modelo, que se encarga de acceder a la base de datos y obtener la información necesaria. 
+    \item El modelo le envía la información obtenida al controlador. 
+    \item El controlador elige la vista adecuada y le pasa la información recibida del modelo. 
+    \item La vista interpreta la información, en base a ella genera la vista final y se la envía al controlador. 
+    \item El controlador le envía la vista ya formada al cliente. 
+\end{enumerate}
+
+\begin{figure}[htb]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{spiral}
+    \includegraphics[width=0.8\textwidth]{imagenes/DiagramasFlujo/Modelo_Vista_Controlador.png}
+\caption{Diagrama de flujo del modelo Modelo-Vista-Controlador}
+\label{fig:MVC}
+\end{figure}
+
+\subsubsection{Diagrama de flujo al llegar un nuevo mensaje}
+Al llegar un nuevo mensaje se siguen los siguientes pasos: 
+\begin{enumerate}
+    \item Se consulta si el correo ya ha sido analizado, en caso de haber sido analizado, se devuelve la información que haya en la base de datos.
+    \item En caso de no haber sido analizado, en función del formato del mensaje se siguen los siguientes pasos.
+        \begin{enumerate}
+            \item EML: Si el formato es EML y tiene algún mensaje en el interior, se enviarán al punto 1 todos los mensajes que tengan.
+            A continuación se analizarán las cabeceras, extrayendo por un lado el tipo y por otro el valor. 
+            \begin{verbatim}
+<Tipo de cabecera>:<valor>
+            \end{verbatim}
+            Dentro de valor se intentarán extraer todos los posibles patrones como si se tratase de un texto. 
+            \item HTML: Si el mensaje está en formato HTML se observarán las etiquetas <a>, en concreto el valor del atributo “href” y del texto mostrado al usuario. 
+            \item Texto plano: Si el formato es texto plano, simplemente se extraen todos los patrones mediante expresiones regulares y se almacenan.
+        \end{enumerate}
+\end{enumerate}
+
+Hay que tener en cuenta que un texto en formato EML puede tener contenidos varios textos en varios formatos. Ver figura \ref{fig:nuevoMensaje}
+
+\begin{figure}[htb]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{spiral}
+    \includegraphics[width=0.8\textwidth]{imagenes/DiagramasFlujo/NuevoMensaje.png}
+\caption{Diagrama de flujo cuando llega un nuevo mensaje}
+\label{fig:nuevoMensaje}
+\end{figure}
+
+\cprotect\subsubsection{Diagrama de flujo para analizar una etiqueta \verb!<a>!}
+
+Para analizar la etiqueta \verb!<a>!, esta debe tener un atributo “href” y texto. Si ambos coinciden, no se hace nada, en caso contrario, se aumenta el score del patrón del atributo “href”. Ver figura \ref{fig:etiquetas_a}.
+
+\begin{figure}[htb]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{spiral}
+    \includegraphics[width=0.4\textwidth]{imagenes/DiagramasFlujo/etiqueta_a.png}
+\caption{Diagrama de flujo para analizar las etiquetas 
+\texttt{<a>}}
+\label{fig:etiquetas_a}
+\end{figure}
+
+
+\subsubsection{Diagrama de flujo para analizar una etiqueta}
+En este apartado se irá comprobado si en el texto se encuentran patrones de los que se han obtenido las expresiones regulares en el punto \ref{imp:expresiones_regulares}. En caso de que haya, se comprobará si tiene características maliciosas como las mencionadas en el punto \ref{patrones_maliciosos}, en caso de tener alguna de ellas, se aumentará su score y se almacenará.  Ver figura \ref{fig:patrones}.
+
+\begin{figure}[htb]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{spiral}
+    \includegraphics[width=0.6\textwidth]{imagenes/DiagramasFlujo/Buscar_agregar_patrones.png}
+\caption{Diagrama de flujo para buscar y almacenar patrones}
+\label{fig:patrones}
+\end{figure}
+
+\section{Capturas de pantallas}
+
+\subsection{Index}
+\begin{figure}[H]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{spiral}
+    \includegraphics[width=0.9\textwidth]{imagenes/capturasAplicacion/Analizar_mensaje.png}
+\caption{Index de la aplicación}
+\label{fig:index}
+\end{figure}
+
+\subsection{Mensaje}
+\begin{figure}[H]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{spiral}
+    \includegraphics[width=0.9\textwidth]{imagenes/capturasAplicacion/Mensaje_info.png}
+\caption{Vista de un mensaje: Información básica}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    %\includegraphics[width=0.5\textwidth]{spiral}
+    \includegraphics[width=0.9\textwidth]{imagenes/capturasAplicacion/Mensaje_patrones.png}
+\caption{Vista de un mensaje: Patrones}
+\end{figure}
