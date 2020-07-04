@@ -5,7 +5,8 @@
     breaklines, 
     caption={Ejemplo archivo EML}, 
     label={Documento:eml_example}, 
-    captionpos=b
+    captionpos=b, 
+    basicstyle=\scriptsize
     ]
 Return-Path: <SRS0=v5D8h6=TB=rankgator.live=kelly@untroubled.org>
 Delivered-To: bruce@home.untroubled.org
@@ -91,6 +92,7 @@ Content-Transfer-Encoding: 7bit
     breaklines, 
     caption={Tabla MessageFormat}, 
     label={Tabla:MessageFormat}, 
+    basicstyle=\scriptsize,
     captionpos=b
     ]
     create  table MessageFormat (
@@ -109,6 +111,7 @@ Content-Transfer-Encoding: 7bit
     breaklines, 
     caption={Tabla AnalyzedBy}, 
     label={Tabla:AnalyzedBy}, 
+    basicstyle=\scriptsize,
     captionpos=b
     ]
     create  table AnalyzedBy (
@@ -125,6 +128,7 @@ Content-Transfer-Encoding: 7bit
     breaklines, 
     caption={Tabla MessageStatus}, 
     label={Tabla:MessageStatus}, 
+    basicstyle=\scriptsize,
     captionpos=b
     ]
     create  table MessageStatus (
@@ -143,6 +147,7 @@ Content-Transfer-Encoding: 7bit
     breaklines, 
     caption={Tabla MessageData}, 
     label={Tabla:MessageData}, 
+    basicstyle=\scriptsize,
     captionpos=b
     ]
     create  table MessageData (
@@ -169,6 +174,7 @@ Content-Transfer-Encoding: 7bit
     breaklines, 
     caption={Tabla MessageText}, 
     label={Tabla:MessageText}, 
+    basicstyle=\scriptsize,
     captionpos=b
     ]
     create  table MessageText (
@@ -185,6 +191,7 @@ Content-Transfer-Encoding: 7bit
     breaklines, 
     caption={Tabla ChildMessages}, 
     label={Tabla:ChildMessages}, 
+    basicstyle=\scriptsize,
     captionpos=b
     ]
     create  table ChildMessages (
@@ -202,6 +209,7 @@ Content-Transfer-Encoding: 7bit
     breaklines, 
     caption={Tablas de la información extraida y auxiliares}, 
     label={Tabla:elements}, 
+    basicstyle=\scriptsize,
     captionpos=b
     ]
     create  table IpAddress (
@@ -541,6 +549,7 @@ create  table MessageHeaderValues_EmailAddress (
   breaklines, 
   caption={Vista MessageText\_view}, 
   label={vista:MessageTextview}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW MessageText_view AS 
@@ -569,6 +578,7 @@ create  table MessageHeaderValues_EmailAddress (
   breaklines, 
   caption={Vista MessageData\_view}, 
   label={vista:MessageDataview}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW MessageData_view AS 
@@ -596,6 +606,7 @@ create  table MessageHeaderValues_EmailAddress (
   breaklines, 
   caption={Vista IpAddress\_view}, 
   label={vista:IpAddress_view}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW IpAddress_view AS 
@@ -615,6 +626,7 @@ create  table MessageHeaderValues_EmailAddress (
   breaklines, 
   caption={Vista Domain\_view}, 
   label={vista:Domain_view}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW Domain_view AS 
@@ -636,6 +648,7 @@ create  table MessageHeaderValues_EmailAddress (
   breaklines, 
   caption={Vista domain\_ip}, 
   label={vista:domain_ip}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE  VIEW domain_ip AS 
@@ -654,6 +667,7 @@ create  table MessageHeaderValues_EmailAddress (
   breaklines, 
   caption={Vista subdomain}, 
   label={vista:subdomain}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE  VIEW subdomain AS 
@@ -672,6 +686,7 @@ create  table MessageHeaderValues_EmailAddress (
   breaklines, 
   caption={Vista IpAddress\_MessageData}, 
   label={vista:IpAddress_MessageData}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW IpAddress_MessageData AS 
@@ -695,6 +710,7 @@ FROM IpAddress
   breaklines, 
   caption={Vista ip\_domain}, 
   label={vista:ip_domain}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE  VIEW ip_domain AS 
@@ -714,6 +730,7 @@ FROM IpAddress
   breaklines, 
   caption={Vista Domain\_MessageData}, 
   label={vista:Domain_MessageData}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW Domain_MessageData AS 
@@ -737,6 +754,7 @@ FROM Domain
   breaklines, 
   caption={Vista domain\_url}, 
   label={vista:domain_url}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW domain_url AS 
@@ -755,6 +773,7 @@ FROM Domain
   breaklines, 
   caption={Vista domain\_email}, 
   label={vista:domain_email}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW domain_email AS 
@@ -774,6 +793,7 @@ FROM Domain
   breaklines, 
   caption={Vista EmailAddress\_view}, 
   label={vista:EmailAddress_view}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW EmailAddress_view AS 
@@ -793,6 +813,7 @@ FROM Domain
   breaklines, 
   caption={Vista EmailAddress\_MessageData}, 
   label={vista:EmailAddress_MessageData}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW EmailAddress_MessageData AS 
@@ -816,6 +837,7 @@ FROM EmailAddress
   breaklines, 
   caption={Vista Url\_view}, 
   label={vista:Url_view}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW Url_view AS 
@@ -836,6 +858,7 @@ FROM EmailAddress
   breaklines, 
   caption={Vista Url\_MessageData}, 
   label={vista:Url_MessageData}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW Url_MessageData AS 
@@ -859,6 +882,7 @@ FROM Url
   breaklines, 
   caption={Vista MessageData\_IpAddress\_view}, 
   label={vista:MessageData_IpAddress_view}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW MessageData_IpAddress_view AS 
@@ -877,6 +901,7 @@ FROM Url
   breaklines, 
   caption={Vista MessageData\_EmailAddress\_view}, 
   label={vista:MessageData_EmailAddress_view}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW MessageData_EmailAddress_view AS 
@@ -897,6 +922,7 @@ FROM Url
   breaklines, 
   caption={Vista MessageData\_Domain\_view}, 
   label={vista:MessageData_Domain_view}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW MessageData_Domain_view AS 
@@ -914,6 +940,7 @@ FROM Url
   breaklines, 
   caption={Vista MessageData\_Url\_view}, 
   label={vista:MessageData_Url_view}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW MessageData_Url_view AS 
@@ -932,6 +959,7 @@ FROM Url
   breaklines, 
   caption={Vista MessageData\_child\_view}, 
   label={vista:MessageData_child_view}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW MessageData_child_view AS 
@@ -954,6 +982,7 @@ FROM Url
   breaklines, 
   caption={Vista MessageData\_parent\_view}, 
   label={vista:MessageData_parent_view}, 
+  basicstyle=\scriptsize,
   captionpos=b
   ]
   CREATE OR REPLACE VIEW MessageData_parent_view AS 
