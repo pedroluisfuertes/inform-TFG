@@ -513,7 +513,6 @@ Hay que tener en cuenta que un texto en formato EML puede tener contenidos vario
 
 \begin{figure}[htb]
     \centering
-    %\includegraphics[width=0.5\textwidth]{spiral}
     \includegraphics[width=0.8\textwidth]{imagenes/DiagramasFlujo/NuevoMensaje.png}
 \caption{Diagrama de flujo cuando llega un nuevo mensaje}
 \label{fig:nuevoMensaje}
@@ -525,7 +524,6 @@ Para analizar la etiqueta \verb!<a>!, esta debe tener un atributo “href” y t
 
 \begin{figure}[htb]
     \centering
-    %\includegraphics[width=0.5\textwidth]{spiral}
     \includegraphics[width=0.4\textwidth]{imagenes/DiagramasFlujo/etiqueta_a.png}
 \caption{Diagrama de flujo para analizar las etiquetas 
 \texttt{<a>}}
@@ -538,34 +536,99 @@ En este apartado se irá comprobado si en el texto se encuentran patrones de los
 
 \begin{figure}[htb]
     \centering
-    %\includegraphics[width=0.5\textwidth]{spiral}
     \includegraphics[width=0.6\textwidth]{imagenes/DiagramasFlujo/Buscar_agregar_patrones.png}
 \caption{Diagrama de flujo para buscar y almacenar patrones}
 \label{fig:patrones}
 \end{figure}
-
+\clearpage
 \section{Capturas de pantallas}
-
 \subsection{Index}
-\begin{figure}[H]
+En la imagen \ref{fig:index} se puede ver la página inicial de la aplicación. 
+En ella los usuarios pueden copiar y pegar el correo para que sea analizado, además deben indicar al sistema qué tipo de mensaje es (EML, HTML o texto).
+\begin{figure}[htb]
     \centering
-    %\includegraphics[width=0.5\textwidth]{spiral}
-    \includegraphics[width=0.9\textwidth]{imagenes/capturasAplicacion/Analizar_mensaje.png}
+    \includegraphics[width=\textwidth]{imagenes/capturasAplicacion/Analizar_mensaje.png}
 \caption{Index de la aplicación}
 \label{fig:index}
 \end{figure}
 
 \subsection{Mensaje}
-\begin{figure}[H]
+Cuando un mensaje es analizado, el usuario verá algo parecido a las figuras \ref{fig:mensaje_datos} y \ref{fig:mensaje_patrones}. En la primera se puede ver la información básica del mensaje, como el formato, cuándo se añadió o cuándo se analizó. 
+
+En la segunda figura \ref{fig:mensaje_patrones} se pueden ver qué patrones se han encontrado en dicho mensaje. Además, en caso de que el usuario quiera obtener más información sobre algún patrón en contro, simplemente podría clicar encima para ser redirigido a la página del patrón. 
+
+\begin{figure}[htb]
     \centering
-    %\includegraphics[width=0.5\textwidth]{spiral}
     \includegraphics[width=0.9\textwidth]{imagenes/capturasAplicacion/Mensaje_info.png}
 \caption{Vista de un mensaje: Información básica}
+\label{fig:mensaje_datos}
 \end{figure}
 
-\begin{figure}[H]
+\begin{figure}[htb]
     \centering
-    %\includegraphics[width=0.5\textwidth]{spiral}
     \includegraphics[width=0.9\textwidth]{imagenes/capturasAplicacion/Mensaje_patrones.png}
 \caption{Vista de un mensaje: Patrones}
+\label{fig:mensaje_patrones}
+\end{figure}
+\clearpage
+\subsection{Dominio}
+En el caso de los dominios, la información varía un poco dependiendo de si es un dominio (figura \ref{fig:dominio}) o un sundominio (figura \ref{fig:Subdominio}).
+
+En caso de ser un subdominio, en la información básica aparecerá el dominio al que pertenece pudiendo navegar hacia él si se clica. 
+
+Por otro lado, en caso de ser un dominio, aparecerán sus subdominios.
+
+El resto de información como mensajes, enlaces, o direcciones de correo donde aparece este patrón, es idéntica y se puede navegar hacia ellos si se clica encima. 
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imagenes/capturasAplicacion/Subdominio.png}
+\caption{Vista de un subdominio.}
+\label{fig:Subdominio}
+\end{figure}
+
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imagenes/capturasAplicacion/Dominio.png}
+\caption{Vista de un dominio.}
+\label{fig:dominio}
+\end{figure}
+
+\clearpage
+\subsection{Enlaces}
+En el caso de los enlaces, se ha integrado la plataforma con Virus Total, de modo que se puede analizar el enlace directamente desde la aplicación clicándo únicamente en el botón de \textit{Analyze} (Ver figuras \ref{fig:enlace} y \ref{fig:enlace_vt}).
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{imagenes/capturasAplicacion/Enlaces.png}
+\caption{Vista de un enlace.}
+\label{fig:enlace}
+\end{figure}
+
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.8\textwidth]{imagenes/capturasAplicacion/Enlaces_virusTotal.png}
+\caption{Vista de un enlace tras analizarlo con VirusTotal.}
+\label{fig:enlace_vt}
+\end{figure}
+
+\clearpage
+\subsection{Direcciones IP}
+Finalmente con las direcciones IP también se ha integrado el servicio de VirusTotal pudiendo analizar la dirección IP con este servicio (ver figuras \ref{fig:ip} y \ref{fig:ip_vt}).
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imagenes/capturasAplicacion/IP.png}
+\caption{Vista de una dirección IP.}
+\label{fig:ip}
+\end{figure}
+
+
+\begin{figure}[htb]
+    \centering
+    \includegraphics[width=0.9\textwidth]{imagenes/capturasAplicacion/IP_vt.png}
+\caption{Vista de una dirección IP tras analizarla con VirusTotal.}
+\label{fig:ip_vt}
 \end{figure}
