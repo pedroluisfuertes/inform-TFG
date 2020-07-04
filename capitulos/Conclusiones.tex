@@ -1,0 +1,94 @@
+\chapter{Conclusiones y vías futuras}
+A continuación se van a revisar los objetivos propuestos para este TFG, cuáles de ellos se han cumplido y qué podría mejorarse en un futuro.
+
+\section{Conclusiones}
+En este apartado se van a revisar los objetivos de la sección \ref{objetivos} y cómo se han resuelto. 
+
+\subsection{Obtención y relación de patrones}
+
+Lo primero que se hizo para obtener los patrones fue analizar qué datos se iba a extraer y qué características específicas tenían. Para ello, se recurrió a los respectivos RFC’s de los que se extrajo toda la información relevante (Ver sección \ref{info_datos}). 
+
+A continuación, se han diseñado expresiones regulares que encajen lo mejor posible con estos patrones (Sección \ref{imp:expresiones_regulares}). 
+
+Con algunos de ellos, como es el caso de los dominios, se necesitó hacer una comprobación adicional para validarlo, como es la consulta de su TDL. Aun así, a la hora de crear la expresión regular se creó un grupo especial para poder identificarlo de manera sencilla (Ver sección \ref{subsec:regexDominios}). 
+
+\subsection{Evaluar de manera relativa la maliciosidad}
+Para evaluar si los datos que se extraían tenían algún índice de maliciosidad, se necesitó obtener información sobre las técnicas usadas en los ataques y qué propiedades cumplían. 
+
+Esto se resolvió consultando artículos que explicaban algunas de las técnicas usadas por los ciberdelincuentes, acotándolas  a las que se podían aplicar a los datos que es están extrayendo y, en función, de eso darle un score a cada dato (Ver sección \ref{patrones_maliciosos}). 
+
+\subsection{Cumplir la ley de protección de datos}
+Este es uno de los objetivos más complicados de cumplir, en parte debido al desconocimiento de la propia ley. Por eso, se consultó a un abogado antes de empezar el proyecto y así diseñarlo de una forma adecuada.  
+
+Así pues, se diseñaron las tablas para que fuese sencillo buscar y eliminar datos concretos en caso de que un usuario lo solicitase. Para esto se han creado las tablas \texttt{<Nombre Elemento>Delete} (Ver sección \ref{tablas_genericas}). 
+
+Sin embargo aún habría que redactar la política de privacidad y la de utilización del servicio. 
+
+\subsection{Integración con terceros}
+El servicio se ha integrado con VirtusTotal como puede verse en \ref{vista_enlaces} y en \ref{vista_ip}. Con Have I been pwned no se ha integrado por ser de pago, pero se podría hacer de manera similar en un futuro.
+
+Otro servicio que también se podría haber integrado es Metadefender \ref{Metadefender}, pero al ofrecer lo mismo que Virus Total se decidió que no era necesario. 
+
+\subsection{Crear un servicio funcional}
+El servicio es completamente funcional, está preparado para desplegarse en un hosting y de hecho parte de la base de datos está online (Ver sección \ref{capturas}).
+
+No se ha hecho el despliegue aún porque las políticas de privacidad y de uso del servicio aún no están redactadas y  es preferible que no esté abierto aún para un uso general. 
+
+\subsection{Otros problemas asociados}
+Además de los objetivos anteriores, durante el desarrollo del proyecto se han encontrado diversos problemas asociados y que no estaban contemplados desde el principio.
+
+\subsubsection{Cómo gestionar la navegabilidad de la página}
+Este fue uno de los problemas más complicados y que aún no está completamente resuelto. Al principio, con pocos datos, MySQL se comportó de manera muy eficiente, pero a medida que el número de datos crecía, su rendimiento se degradaba. 
+
+Para paliar esto, se han usado índices y se han separado los datos que más se consultan de otros con un gran tamaño y que no se usan tanto, como el texto de los correos.
+
+Esto se resolvió en las secciones \ref{diseno:identificar_datos} y \ref{diseno:datos}.
+
+\subsubsection{Mejorar el rendimiento de MySQL}
+Este fue uno de los problemas más complicados y que aún no está completamente resuelto. 
+
+Al principio con pocos datos, MySQL se comportó de manera muy eficiente pero a medida que el número de datos crecía, su rendimiento se degradaba. Para paliar esto, se han usado índices y se han separado los datos que más se consultan de otros con un gran tamaño y que no se usan tanto, como el texto de los correos. 
+
+Esto se trató en la seccion \ref{diseno:busquedas}, donde se sugería cómo se debían crear los índices de los que se habló en la sección \ref{imp:indices}.
+
+\subsubsection{Cómo tratar los archivos EML}
+Otro de los problemas que se han encontrado fue que los correos con formato EML podían contener varios subdocumentos asociados.
+
+En el diseño inicial esto no se tuvo en cuenta, finalmente se decidió tratar por un lado el documento principal y por otro los documentos asociados de modo que un mismo mensaje puede estar asociado a varios correos en formato EML, creando una referencia a la misma tabla de Mensajes.
+
+De esto se habló en las secciones \ref{diseno:tipo_dato} y \ref{archivos_EML}. 
+
+\subsubsection{Obtener mensajes que fueran maliciosos}
+
+Tener mensajes maliciosos era algo crucial para poder hacer pruebas y así alimentar la base de datos. 
+
+Gracias a la página Untroubled \cite{untroubled} se pudieron obtener casi ocho millones y medio de correos maliciosos, más que suficientes para las pruebas. 
+
+\subsubsection{Gestionar gran cantidad de información}
+Otro de los principales problemas también ha sido precisamente la gran cantidad de correo que había disponibles. De forma general, en la Universidad, se ha tratado con pequeños conjuntos de datos, gestionar una cantidad mucho mayor ha sido complicado (Ver sección \ref{diseno:cantidad_info}). 
+
+Para resolver esto, se ha permitido guardar mensajes sin analizar, de esta manera por un lado se puede simplemente almacenar los correos y por otro realizar el análisis. 
+
+De hecho, la base de datos se ha preparado para poder realizar el análisis con un lenguaje distinto para intentar maximizar el rendimiento (Ver secctión \ref{Tabla_MessageStatus}). 
+
+\subsection{Monetización}
+Aunque la monetización no ha sido posible como tal, sí que se ha trabajado en este sentido.
+Este proyecto fue uno de los ganadores en el concurso de Telefónica y la Junta de Andalucía, Analucía Open Future, formando parte del El Patio \cite{AOF}.
+
+\section{Trabajo futuro}
+
+En este apartado se van a tratar posibles mejoras a este proyecto. 
+
+\subsection{Crear una mejor heurística para calcular el score}
+Ahora mismo el score no está basado en ninguna heurística, simplemente se le añade un valor fijo por cada característica identificada como maliciosa. En el futuro sería interesante que este score fuera calculado en base a algún criterio más elaborado. 
+
+\subsection{Poder identificar correos similares}
+Actualmente los correos son identificados mediante un hash, esto es una manera muy efectiva y rápida de identificar datos que son exactamente idénticos, pero en el caso de que varía un solo carácter, este hash variaría. Sería interesante usar alguna heurística que midiese cuan parecidos son dos correos de modo que se pudiesen identificar incluso si cambian algunos datos. 
+
+Una posible forma de atacar este objetivo podría ser mediante ElacticSearch en combinación con una base de datos.
+
+\subsection{Hacer pruebas de rendimiento con MongoDB}
+Como se ha podido ver, MongoDB también podría ser una buena opción y tal vez escale mejor que MySQL. Sería un buen trabajo futuro comprobar cómo rinde este sistema gestor de base de datos cuando se inserta una gran cantidad de correos. En este caso la complejidad está en hacer las relaciones entre los datos.
+
+\subsection{Detectar más patrones}
+Una ampliación sencilla sería detectar también direcciones de carteras de criptomonedas, como Bitcoin \cite{bitcoin} o Monero \cite{Monero}.

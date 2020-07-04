@@ -256,7 +256,7 @@ Algunas fechas se han definido con “\verb!DEFAULT CURRENT_TIMESTAMP(6)!” par
 \subsection{Mensajes}
 La información de los mensajes está distribuida en varias tablas, a continuación se van a nombrar las más relevantes. 
 
-\subsubsection{Tabla MessageStatus}
+\subsubsection{Tabla MessageStatus}\label{Tabla_MessageStatus}
 La tabla MessageStatus \ref{Tabla:MessageStatus} permite saber si un mensaje ha sigo ya o no analizado. Esto permite poder separar por un lado el almacenamiento de los mensajes de su análisis, pudiendo de esta manera almacenar de manera rápida una gran cantidad de correos y posponer el análisis para más adelante. 
 
 \subsubsection{Tabla MessageFormat}
@@ -279,7 +279,7 @@ La tabla MessageText \ref{Tabla:MessageText} únicamente está destinada a almac
 En la tabla ChildMessages \ref{Tabla:ChildMessages} se van a guardar todas las referencias de los mensajes contenidos en otros mensajes como sucede con los correos en formato eml. 
 
 
-\subsection{Índices}
+\subsection{Índices} \label{imp:indices}
 Los índices utilizados son índices únicos y se han indexado:
 
 \begin{itemize}
@@ -541,7 +541,7 @@ En este apartado se irá comprobado si en el texto se encuentran patrones de los
 \label{fig:patrones}
 \end{figure}
 \clearpage
-\section{Capturas de pantallas}
+\section{Capturas de pantallas} \label{capturas}
 \subsection{Index}
 En la imagen \ref{fig:index} se puede ver la página inicial de la aplicación. 
 En ella los usuarios pueden copiar y pegar el correo para que sea analizado, además deben indicar al sistema qué tipo de mensaje es (EML, HTML o texto).
@@ -596,7 +596,7 @@ El resto de información como mensajes, enlaces, o direcciones de correo donde a
 \end{figure}
 
 \clearpage
-\subsection{Enlaces}
+\subsection{Enlaces} \label{vista_enlaces}
 En el caso de los enlaces, se ha integrado la plataforma con Virus Total, de modo que se puede analizar el enlace directamente desde la aplicación clicándo únicamente en el botón de \textit{Analyze} (Ver figuras \ref{fig:enlace} y \ref{fig:enlace_vt}).
 
 \begin{figure}[htb]
@@ -615,7 +615,7 @@ En el caso de los enlaces, se ha integrado la plataforma con Virus Total, de mod
 \end{figure}
 
 \clearpage
-\subsection{Direcciones IP}
+\subsection{Direcciones IP} \label{vista_ip}
 Finalmente con las direcciones IP también se ha integrado el servicio de VirusTotal pudiendo analizar la dirección IP con este servicio (ver figuras \ref{fig:ip} y \ref{fig:ip_vt}).
 
 \begin{figure}[htb]

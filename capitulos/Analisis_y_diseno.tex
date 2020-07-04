@@ -14,7 +14,7 @@ De manera general, se deben tener en cuenta los siguientes factores:
 
 \subsection{Tipos de datos}
 Dentro de los tipos de datos se tienen que distinguir dos tipos, por un lado, están los mensajes que el usuario envía y por otro los datos que se extraen de ellos. 
-\subsubsection{Tipos de datos a analizar}
+\subsubsection{Tipos de datos a analizar}\label{diseno:tipo_dato}
 Dentro de los mensajes, este proyecto se centrará en mensajes de correo electrónico, por lo que hay fundamentalmente de tres tipos de datos, en texto plano, en HyperText Markup Language (HTML) \cite{html_wiki} y en formato (EML).
 
 A la hora de elegir un lenguaje, contar con alguna librería que sea capaz de analizar dichos tipos de archivos es algo crítico, puesto que hacer un analizador de dichos tipos sería muy costoso y llevaría demasiado tiempo. Mientras la mayoría de los lenguajes modernos tienen librarías para leer archivos en HTML, no ocurre los mismo para el formato EML. 
@@ -29,7 +29,7 @@ El tipo de relaciones serán normalmente de muchos a muchos, ya que de un único
 
 Respecto a la cantidad de relaciones, mientras que de un correo no se deben extraer demasiados datos, un dato concreto puede aparecer en una gran cantidad de correos, por lo que en función del diseño que se haga, recuperar todos los correos en los que aparece un determinado dato podría llegar a ser una operación muy costosa. 
 
-\subsection{Forma de identificar los datos}
+\subsection{Forma de identificar los datos} \label{diseno:identificar_datos}
 En este proyecto y debido a la naturaleza de los datos que se tratan, algo que pudiera ser trivial como es el hecho de identificar un dato concreto, se vuelve una tarea más compleja, pues estos pueden ser relativamente grandes y no se deben tratar de la misma manera que otros de menor tamaño, como tal vez puede ser un número o una fecha. 
 
 También es importante el hecho de poder “navegar” mediante enlaces, ya que no tendría sentido poner como dirección de un mensaje su propio contenido.
@@ -76,7 +76,7 @@ Finalmente se va a optar por SHA1 debido a que MD5 en la actualidad está roto, 
 
 A la hora de la elección de un lenguaje de programación, será necesario que este cuente con dicha función o en su defecto, que haya alguna implementación de esta ya desarrollada, pues no es objetivo de este trabajo desarrollarla.
 
-\subsection{Forma de mostrar los datos}
+\subsection{Forma de mostrar los datos} \label{diseno:datos}
 La forma de mostrar los datos puede indicar o al menos sugerir de qué manera se deben almacenar para facilitar su posterior visualización.
 
 Dependiendo del tipo de dato se puede mostrar una información u otra, aunque hay información común a todos los datos.
@@ -136,7 +136,7 @@ La información siguiente es específica de las direcciones de correo electróni
 \end{itemize}
 
 
-\subsection{Cómo se va a buscar información y qué búsquedas se van a realizar}
+\subsection{Cómo se va a buscar información y qué búsquedas se van a realizar} \label{diseno:busquedas}
 Saber qué búsquedas van a hacer y con qué datos se cuenta para llevarlas a cabo es necesario para determinar por un lado cómo se guarda la información y, por otro lado, las relaciones necesarias para que se puedan realizar las dichas consultas.
 
 En este caso, dado un documento se debe poder obtener a cada uno de los datos extraídos de él y dado un dato cualquiera, tienen que poder obtenerse tanto los correos en los que aparece, como otros elementos relacionados con él. Por ejemplo, dado un domino, además de los mensajes donde está presente, también se debe obtener información sobre todos los enlaces analizados pertenecientes a dicho dominio.
@@ -149,13 +149,13 @@ En un principio no será habitual buscar elementos por información relativa a e
 
 También es importante señalar que al principio las operaciones de inserción serán las más comunes y que a medida que se vaya haciendo uso del servicio, las operaciones de consulta serán las que prevalecerán. Además, es necesario que el servicio no sea demasiado lento, pues no sería práctico, por este motivo, debe prevalecer la velocidad de consulta sobre la inserción. 
 
-\subsection{Cantidad de información que se va a almacenar}
+\subsection{Cantidad de información que se va a almacenar}\label{diseno:cantidad_info}
 Respecto a la cantidad de información a almacenar, el sistema debe estar preparado para guardar un gran volumen de información, de decenas o cientos de millones de correos electrónicos, por lo que contar con un sistema escalable es crítico.  
 
 A la hora de realizar este informe, se cuentan con más de 8.5 millones de correos electrónicos perniciosos. 
 
 
-\section{Información sobre los datos que se va a extraer}
+\section{Información sobre los datos que se va a extraer} \label{info_datos}
 Como ya se ha comentado con anterioridad, uno de los objetivos del proyecto es extraer distintos tipos de datos y relacionarlos con otros correos electrónicos. 
 
 En concreto se quiere extraer: 
@@ -337,7 +337,7 @@ Donde:
     \item Texto: Será el texto que se muestre al usuario.
 \end{itemize}
 
-\subsection{Archivos EML}
+\subsection{Archivos EML} \label{archivos_EML}
 El formato EML es el más usado para guardar correos electrónicos. Aunque su especificación no está en ningún RFC concreto, en general cumple con lo definido en el RFC 5322\cite{rfc5322}, del cual son especialmente interesantes los puntos 2 “Lexical Analysis of Messages” y 3 “Syntax”. 
 
 También es interesante el RFC 4021\cite{rfc4021} donde se detallan todos los tipos de cabeceras oficiales, su formato, y una pequeña descripción de estas. En el RFC 6854\cite{rfc6854}, en concreto el punto 2 ``Allowing Group Syntax in `From:' and `Sender:' '' se actualiza la sintaxis de los campos “From” y “Sender”, campos muy relevantes en este proyecto ya que pueden dar información sobre el emisor del correo.
@@ -460,7 +460,7 @@ Permite analizar archivos, enlaces, dominios y direcciones IP por varias decenas
 
 Podría utilizarse para analizar alguno de los tipos de datos anteriores, que salgan como sospechosos o de los que el usuario dude.
 
-\subsection{Metadefender}
+\subsection{Metadefender}\label{Metadefender}
 Es muy similar a Virus Total y por tanto de podría utilizar como alternativa a este. 
 
 \subsection{Have I been pwned}
@@ -639,7 +639,7 @@ Antes de analizar cada una de las tablas, se va a precisar algunos campos comune
     \end{itemize}
 \end{itemize}
 
-\subsubsection{Tablas genéricas}
+\subsubsection{Tablas genéricas} \label{tablas_genericas}
 \begin{itemize}
     \item \texttt{<Nombre Elemento>Delete}: Estas tablas están asociadas a cada uno de los elementos a almacenar susceptibles de ser borrados, como mensajes, emails,…
     
