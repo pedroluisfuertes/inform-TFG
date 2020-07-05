@@ -540,9 +540,9 @@ En este apartado se irá comprobado si en el texto se encuentran patrones de los
 \caption{Diagrama de flujo para buscar y almacenar patrones}
 \label{fig:patrones}
 \end{figure}
-\clearpage
-\section{Ejemplo de uso} \label{capturas}
-\subsection{Index}
+
+\chapter{Ejemplo de uso} \label{capturas}
+\section{Index}
 En la imagen \ref{fig:index} se puede ver la página inicial de la aplicación. 
 En ella los usuarios pueden copiar y pegar el correo para que sea analizado, además deben indicar al sistema qué tipo de mensaje es (EML, HTML o texto).
 \begin{figure}[htb]
@@ -552,26 +552,27 @@ En ella los usuarios pueden copiar y pegar el correo para que sea analizado, ade
 \label{fig:index}
 \end{figure}
 
-\subsection{Mensaje}
+\section{Mensaje}
 Cuando un mensaje es analizado, el usuario verá algo parecido a las figuras \ref{fig:mensaje_datos} y \ref{fig:mensaje_patrones}. En la primera se puede ver la información básica del mensaje, como el formato, cuándo se añadió o cuándo se analizó. 
 
 En la segunda figura \ref{fig:mensaje_patrones} se pueden ver qué patrones se han encontrado en dicho mensaje. Además, en caso de que el usuario quiera obtener más información sobre algún patrón en contro, simplemente podría clicar encima para ser redirigido a la página del patrón. 
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.9\textwidth]{imagenes/capturasAplicacion/Mensaje_info.png}
+    \includegraphics[width=0.8\textwidth]{imagenes/capturasAplicacion/Mensaje_info.png}
 \caption{Vista de un mensaje: Información básica}
 \label{fig:mensaje_datos}
 \end{figure}
 
 \begin{figure}[htb]
     \centering
-    \includegraphics[width=0.9\textwidth]{imagenes/capturasAplicacion/Mensaje_patrones.png}
+    \includegraphics[width=0.8\textwidth]{imagenes/capturasAplicacion/Mensaje_patrones.png}
 \caption{Vista de un mensaje: Patrones}
 \label{fig:mensaje_patrones}
 \end{figure}
+
 \clearpage
-\subsection{Dominio}
+\section{Dominio}
 En el caso de los dominios, la información varía un poco dependiendo de si es un dominio (figura \ref{fig:dominio}) o un sundominio (figura \ref{fig:Subdominio}).
 
 En caso de ser un subdominio, en la información básica aparecerá el dominio al que pertenece pudiendo navegar hacia él si se clica. 
@@ -596,7 +597,7 @@ El resto de información como mensajes, enlaces, o direcciones de correo donde a
 \end{figure}
 
 \clearpage
-\subsection{Enlaces} \label{vista_enlaces}
+\section{Enlaces} \label{vista_enlaces}
 En el caso de los enlaces, se ha integrado la plataforma con Virus Total, de modo que se puede analizar el enlace directamente desde la aplicación clicándo únicamente en el botón de \textit{Analyze} (Ver figuras \ref{fig:enlace} y \ref{fig:enlace_vt}).
 
 \begin{figure}[htb]
@@ -615,7 +616,7 @@ En el caso de los enlaces, se ha integrado la plataforma con Virus Total, de mod
 \end{figure}
 
 \clearpage
-\subsection{Direcciones IP} \label{vista_ip}
+\section{Direcciones IP} \label{vista_ip}
 Finalmente con las direcciones IP también se ha integrado el servicio de VirusTotal pudiendo analizar la dirección IP con este servicio (ver figuras \ref{fig:ip} y \ref{fig:ip_vt}).
 
 \begin{figure}[htb]
